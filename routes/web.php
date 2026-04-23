@@ -16,3 +16,17 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
 // kung gusto nimo direct dashboard kini gamita
 // Route::get('/', [DashboardController::class, 'index']);
 // Route::get('/dashboard', [DashboardController::class, 'index']);
+
+Route::get('/books', function () {
+    return view('books');
+});
+
+
+Route::get('/category', function () {
+    return view('category');
+});
+
+
+Route::get('/availability', function () {
+    return view('availability');
+});

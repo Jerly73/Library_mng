@@ -10,15 +10,15 @@
 
             <nav class="px-4 space-y-2">
                 <!-- Dashboard -->
-                <a href="#" class="flex items-center space-x-2 px-4 py-2 bg-red-200 rounded text-gray-800 font-medium">
-                    <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"    >
+                <a href="#" class="flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
+                    <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/>
                     </svg>
                     <span>Dashboard</span>
                 </a>
                 <!-- Books -->
-                <a href="#" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <a href="#" class="flex items-center space-x-2 px-4 py-2 bg-red-200 rounded text-gray-800 font-medium"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" >
                         <path d="M12 6l-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h4l2-2m0-12l2-2h4a2 2 0 012 2v12a2 2 0 01-2 2h-4l-2-2"/>
                     </svg>
                     <span>Books</span>
@@ -47,7 +47,7 @@
 
             <!-- Header -->
             <div class="flex items-center justify-between border-b pb-4">
-                <h2 class="text-3xl font-bold text-[#6A2727]">Dashboard</h2>
+                <h2 class="text-3xl font-bold text-[#6A2727]">Books</h2>
 
                 <div class="flex items-center space-x-6">
                     <!-- Toggle -->
@@ -75,56 +75,44 @@
                 </div>
             </div>
 
-            <!-- Book Recommendation -->
-            <section class="mt-8">
-                <h3 class="text-xl font-semibold text-[#6A2727] mb-4">
-                    Book Recommendation
-                </h3>
+            <div class="grid grid-cols-3 gap-6">
 
-                <div class="flex space-x-6 overflow-x-auto">
-                    @foreach(['book1.jpg','book2.jpg','book3.jpg','book4.jpg'] as $book)
-                        <img src="{{ asset('images/'.$book) }}"
-                             class="w-40 h-56 object-cover rounded shadow">
-                    @endforeach
-                </div>
-            </section>
+            @for ($i = 0; $i < 9; $i++)
+            <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition flex gap-4">
 
-            <!-- Book Category -->
-            <section class="mt-10">
-                <h3 class="text-xl font-semibold text-[#6A2727] mb-4">
-                    Book Category
-                </h3>
+                <!-- IMAGE -->
+                <img src="{{ asset('images/book1.jpg') }}"
+                    class="w-24 h-32 object-cover rounded">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- DETAILS -->
+                <div class="flex-1">
+                    <h3 class="font-bold text-lg">Calculus</h3>
+                    <p class="text-sm text-gray-500">James Stewart</p>
 
-                    @foreach([
-                        ['img'=>'book1.jpg','title'=>'Business'],
-                        ['img'=>'book2.jpg','title'=>'Design'],
-                        ['img'=>'book3.jpg','title'=>'Money / Investing'],
-                        ['img'=>'book4.jpg','title'=>'Horror']
-                    ] as $book)
+                    <!-- TAG -->
+                    <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                        Mathematics
+                    </span>
 
-                    <div class="bg-white p-4 rounded-xl shadow text-center">
-                        <img src="{{ asset('images/'.$book['img']) }}"
-                             class="w-24 h-32 object-cover mx-auto rounded mb-3">
+                    <p class="text-xs text-gray-400 mt-2">
+                        Comprehensive guide covering fundamentals of differential and integral calculus.
+                    </p>
 
-                        <p class="text-sm font-semibold">Title: {{ $book['title'] }}</p>
-                        <p class="text-xs text-gray-500 mb-3">Author: Unknown</p>
+                    <!-- BUTTONS -->
+                    <div class="flex justify-between items-center mt-3">
+                        <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded">
+                            Reserve
+                        </button>
 
-                        <div class="flex justify-center space-x-2">
-                            <button class="bg-blue-500 text-white text-xs px-3 py-1 rounded">
-                                Borrow
-                            </button>
-                            <button class="bg-yellow-400 text-xs px-3 py-1 rounded">
-                                Availability
-                            </button>
-                        </div>
+                        <span class="bg-blue-500 text-white px-3 py-1 rounded text-sm">
+                            Available
+                        </span>
                     </div>
-
-                    @endforeach
-
                 </div>
-            </section>
+
+            </div>
+            @endfor
+
 
         </main>
     </div>
