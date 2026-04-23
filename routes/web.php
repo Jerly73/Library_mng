@@ -1,7 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Models\Post;
 
-Route::get('/', function () {
-    return view('welcome');
+// kung i type pa ang dash board kini
+Route::get('/dashboard', function () {
+    return view('dashboard');
 });
+
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
+
+// kung gusto nimo direct dashboard kini gamita
+// Route::get('/', [DashboardController::class, 'index']);
+// Route::get('/dashboard', [DashboardController::class, 'index']);
