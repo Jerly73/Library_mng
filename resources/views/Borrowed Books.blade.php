@@ -20,7 +20,7 @@
                     <span>Dashboard</span>
                 </a>
                 <!-- Books -->
-                <a href="books" class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium"> 
+                <a href="books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" >
                     <path stroke-linecap="round" stroke-linejoin="round"d="M7 6h10a2 2 0 012 2v11H9a2 2 0 01-2-2V6z" />
                     </svg>
@@ -43,7 +43,7 @@
                     <span>Availability</span>
                 </a>
                 <!-- Borrowed Books -->
-                <a href="Borrowed Books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                <a href="Borrowed Books" class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
                         <path d="M12 6l-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h4l2-2m0-12l2-2h4a2 2 0 012 2v12a2 2 0 01-2 2h-4l-2-2"/>
@@ -52,21 +52,45 @@
                 </a>
             </nav>
         </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b pb-4">
 
-       <!-- Main Content -->
-<main class="flex-1 p-6">
+            <!-- LEFT: TITLE -->
+            <h2 class="text-3xl font-bold text-[#6A2727]">
+                Borrowed Books
+            </h2>
 
-    <!-- Header -->
-    <div class="flex items-center justify-between border-b pb-4">
+            <!-- RIGHT: USER INFO -->
+            <div class="flex items-center space-x-6">
+                <!-- Toggle -->
+                <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
+                    <span class="font-semibold text-[#6A2727]">Student</span>
+                </div>
 
-        @php
-        $categoryNames = [
-            1 => 'Mathematics', 2 => 'Science',    3 => 'Literature',
-            4 => 'History',     5 => 'Geography',  6 => 'ICT',
-            7 => 'Fiction',     8 => 'Non-Fiction', 9 => 'Biography',
-            10 => 'Arts',       11 => 'Sports',    12 => 'Reference',
-        ];
+                <!-- User -->
+                <div class="flex items-center space-x-2">
+                    <div>
+                        <p class="text-sm font-semibold text-[#6A2727]">USER NAME</p>
+                        <p class="text-xs text-[#6A2727]">Student</p>
+                    </div>
+                    <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
+                </div>
 
+                <!-- LOGOUT -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6 text-[#a66a6a] cursor-pointer hover:text-red-700"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7"/>
+                </svg>
+            </div>
+
+        </div>
+            @php
+            // SAME DATA (copy gikan sa books page)
         $allBooks = [
             ['id'=>1, 'title'=>'Calculus',              'author'=>'James Stewart',    'category_id'=>1,  'cover'=>'book1.jpg', 'description'=>'Fundamentals of differential and integral calculus.',   'status'=>'Available'],
             ['id'=>2, 'title'=>'Algebra Basics',         'author'=>'Ron Larson',       'category_id'=>1,  'cover'=>'book1.jpg', 'description'=>'Core algebra concepts for students.',                    'status'=>'Available'],
@@ -89,91 +113,49 @@
             ['id'=>19,'title'=>'Encyclopedia Britannica','author'=>'Britannica',       'category_id'=>12, 'cover'=>'book1.jpg', 'description'=>'Comprehensive general reference encyclopedia.',         'status'=>'Available'],
         ];
 
-        $categoryId = $categoryId ?? null;
-        $books = $categoryId
-            ? array_filter($allBooks, fn($b) => $b['category_id'] == $categoryId)
-            : $allBooks;
+            // FILTER: borrowed = Reserved
+            $borrowedBooks = array_filter($allBooks, fn($b) => $b['status'] === 'Reserved');
+            @endphp
 
-        $currentCategory = $categoryId ? ($categoryNames[$categoryId] ?? 'Books') : ' Books';
-        @endphp
+            <!-- GRID -->
+            <div class="grid grid-cols-3 gap-6">
 
-        <h2 class="text-3xl font-bold text-[#6A2727]">
-            {{ $currentCategory }}
-        </h2>
+            
 
-        <div class="flex items-center space-x-6">
-            <!-- Toggle -->
-            <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
-                <span class="font-semibold text-[#6A2727]">Student</span>
-                
-            </div>
-            <!-- User -->
-            <div class="flex items-center space-x-2">
-                <div>
-                    <p class="text-sm font-semibold text-[#6A2727]">USER NAME</p>
-                    <p class="text-xs text-[#6A2727]">Student</p>
+                @forelse($borrowedBooks as $book)
+                <div class="bg-white p-4 rounded-xl shadow flex gap-4">
+
+                    <!-- IMAGE -->
+                    <img src="{{ asset('images/' . $book['cover']) }}"
+                        class="w-24 h-32 object-cover rounded">
+
+                    <!-- DETAILS -->
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg">{{ $book['title'] }}</h3>
+                        <p class="text-sm text-gray-500">{{ $book['author'] }}</p>
+
+                        <p class="text-xs text-gray-400 mt-2">
+                            {{ $book['description'] }}
+                        </p>
+
+                        <!-- STATUS -->
+                        <span class="inline-block mt-3 bg-red-400 text-white px-3 py-1 rounded text-sm">
+                            Borrowed
+                        </span>
+                    </div>
                 </div>
-                <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
-            </div>
-            <!-- LOGOUT -->
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-6 h-6 text-[#a66a6a] cursor-pointer hover:text-red-700"
-                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
-            </svg>
-        </div>
-    </div>
 
-
-    <div class="mb-6 mt-4 flex items-center gap-3">
-        <!-- Back to Categories -->
-        <a href="/category" class=" bg-[#6A2727]/29 flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
-            To Categories
-        </a>
-    </div>
-
-    <!-- BOOKS GRID -->
-    <div class="grid grid-cols-3 gap-6">
-        @forelse($books as $book)
-        <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition flex gap-4">
-
-            <!-- IMAGE -->
-            <img src="{{ asset('images/' . $book['cover']) }}"
-                class="w-24 h-32 object-cover rounded">
-
-            <!-- DETAILS -->
-            <div class="flex-1">
-                <h3 class="font-bold text-lg">{{ $book['title'] }}</h3>
-                <p class="text-sm text-gray-500">{{ $book['author'] }}</p>
-
-                <!-- TAG -->
-                <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
-                    {{ $categoryNames[$book['category_id']] ?? '' }}
-                </span>
-
-                <p class="text-xs text-gray-400 mt-2">
-                    {{ $book['description'] }}
-                </p>
-
-                <!-- BUTTONS -->
-                <div class="flex justify-between items-center mt-3">
-                    <a class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded cursor-pointer">
-                        Reserve
-                    </a>
-                    <span class="{{ $book['status'] === 'Available' ? 'bg-blue-500' : 'bg-red-400' }} text-white px-3 py-1 rounded text-sm">
-                        {{ $book['status'] }}
-                    </span>
+                @empty
+                <div class="col-span-3 text-center py-16 text-gray-400">
+                    <p class="text-lg">No borrowed books yet.</p>
                 </div>
-            </div>
-        </div>
+                @endforelse
 
-        @empty
-        <div class="col-span-3 text-center py-16 text-gray-400">
-            <p class="text-lg">No books found in this category.</p>
-            <a href="/category" class="text-[#6A2727] underline text-sm mt-2 inline-block">← Back to Categories</a>
-        </div>
-        @endforelse
-    </div>
-</main>
+            </div>
+            
+
+        </main>
+        
+
     </div>
 </x-layout>

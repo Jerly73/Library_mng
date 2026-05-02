@@ -9,6 +9,9 @@
             </div>
 
             <nav class="px-4 space-y-2 ">
+                <!-- Menu -->
+                <div class="px-6 text-gray-500 font-semibold mb-2">MENU</div>
+
                 <!-- Dashboard -->
                 <a href="dashboard" class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium">
                     <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"    >
@@ -17,9 +20,9 @@
                     <span>Dashboard</span>
                 </a>
                 <!-- Books -->
-                <a href="books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path d="M12 6l-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h4l2-2m0-12l2-2h4a2 2 0 012 2v12a2 2 0 01-2 2h-4l-2-2"/>
+                <a href="books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" >
+                    <path stroke-linecap="round" stroke-linejoin="round"d="M7 6h10a2 2 0 012 2v11H9a2 2 0 01-2-2V6z" />
                     </svg>
                     <span>Books</span>
                 </a>
@@ -35,9 +38,17 @@
                 <a href="availability" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
-                        <path d="M9 12l2 2 4-4"/>
+                        <path d="M5 12l4 4 10-10 2 2-12 12-6-6z"/>
                     </svg>
                     <span>Availability</span>
+                </a>
+                <!-- Borrowed Books -->
+                <a href="Borrowed Books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M12 6l-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h4l2-2m0-12l2-2h4a2 2 0 012 2v12a2 2 0 01-2 2h-4l-2-2"/>
+                    </svg>
+                    <span>Borrowed Books</span>
                 </a>
             </nav>
         </aside>
@@ -53,7 +64,7 @@
                     <!-- Toggle -->
                     <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
                         <span class="font-semibold text-[#6A2727]">Student</span>
-                        <span class="text-[#6A2727]">Teacher</span>
+                        
                     </div>
 
                     <!-- User -->
