@@ -27,13 +27,7 @@
                     <span>Books</span>
                 </a>
                 <!-- Category -->
-                <a href="category" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <span>Category</span>
-                </a>
+              
                 <!-- Availability -->
                 <a href="availability" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -56,8 +50,8 @@
        <!-- Main Content -->
 <main class="flex-1 p-6">
 
-    <!-- Header -->
-    <div class="flex items-center justify-between border-b pb-4">
+     <!-- Header -->
+     <div class="flex items-center justify-between border-b pb-4">
 
         @php
         $categoryNames = [
@@ -89,47 +83,88 @@
             ['id'=>19,'title'=>'Encyclopedia Britannica','author'=>'Britannica',       'category_id'=>12, 'cover'=>'book1.jpg', 'description'=>'Comprehensive general reference encyclopedia.',         'status'=>'Available'],
         ];
 
-        $categoryId = $categoryId ?? null;
-        $books = $categoryId
-            ? array_filter($allBooks, fn($b) => $b['category_id'] == $categoryId)
-            : $allBooks;
+        // Get category filter from either route parameter or query string
+        $categoryId = $categoryId ?? request('category', null);
+        $search = request('search', '');
 
-        $currentCategory = $categoryId ? ($categoryNames[$categoryId] ?? 'Books') : ' Books';
+        $books = array_filter($allBooks, function($book) use ($categoryId, $search, $categoryNames) {
+            $matchCategory = !$categoryId || $book['category_id'] == $categoryId;
+            $matchSearch = !$search || 
+                stripos($book['title'], $search) !== false || 
+                stripos($book['author'], $search) !== false;
+            return $matchCategory && $matchSearch;
+        });
+
+        $currentCategory = $categoryId ? ($categoryNames[$categoryId] ?? 'Books') : 'All Books';
         @endphp
 
         <h2 class="text-3xl font-bold text-[#6A2727]">
-            {{ $currentCategory }}
+            @if($categoryId && $search)
+                {{ $categoryNames[$categoryId] ?? 'Books' }} - Search: "{{ $search }}"
+            @elseif($categoryId)
+                {{ $categoryNames[$categoryId] ?? 'Books' }}
+            @elseif($search)
+                Search: "{{ $search }}"
+            @else
+                All Books
+            @endif
         </h2>
 
-        <div class="flex items-center space-x-6">
+        <div class="flex items-center gap-3">
+            <!-- Search -->
+            <form method="GET" action="/books" class="flex items-center gap-2">
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ request('search') }}" 
+                    placeholder="Search books..." 
+                    class="px-3 py-2 border rounded-md bg-white text-sm w-48"
+                >
+            </form>
+
+            <!-- Category Filter -->
+            <form method="GET" action="/books" class="flex items-center gap-2">
+                <label for="category" class="text-sm font-semibold text-[#6A2727]">Filter by Category:</label>
+                <select name="category" id="category" onchange="this.form.submit()" class="px-3 py-2 border rounded-md bg-white text-sm">
+                    <option value="">All Categories</option>
+                    @foreach($categoryNames as $id => $name)
+                        <option value="{{ $id }}" {{ $categoryId == $id ? 'selected' : '' }}>
+                            {{ $name }}
+                        </option>
+                    @endforeach
+                </select>
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+            </form>
+
             <!-- Toggle -->
             <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
                 <span class="font-semibold text-[#6A2727]">Student</span>
-                
             </div>
             <!-- User -->
             <div class="flex items-center space-x-2">
                 <div>
-                    <p class="text-sm font-semibold text-[#6A2727]">USER NAME</p>
+                    <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
                     <p class="text-xs text-[#6A2727]">Student</p>
                 </div>
                 <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
             </div>
             <!-- LOGOUT -->
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="w-6 h-6 text-[#a66a6a] cursor-pointer hover:text-red-700"
-                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
-            </svg>
+            <form method="POST" action="{{ route('logout') }}" class="inline">
+                @csrf
+                <button type="submit" class="w-6 h-6 text-[#a66a6a] hover:text-red-700 cursor-pointer transition-colors" title="Logout">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
+                    </svg>
+                </button>
+            </form>
         </div>
     </div>
 
-
+    <!-- All Books Button -->
     <div class="mb-6 mt-4 flex items-center gap-3">
-        <!-- Back to Categories -->
-        <a href="/category" class=" bg-[#6A2727]/29 flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
-            To Categories
-        </a>
+  
     </div>
 
     <!-- BOOKS GRID -->
@@ -169,8 +204,8 @@
 
         @empty
         <div class="col-span-3 text-center py-16 text-gray-400">
-            <p class="text-lg">No books found in this category.</p>
-            <a href="/category" class="text-[#6A2727] underline text-sm mt-2 inline-block">← Back to Categories</a>
+            <p class="text-lg">{{ request('search') ? 'No books match your search.' : 'No books found in this category.' }}</p>
+            <a href="/books" class="text-[#6A2727] underline text-sm mt-2 inline-block">← View all books</a>
         </div>
         @endforelse
     </div>

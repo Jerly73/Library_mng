@@ -7,24 +7,32 @@
                 <img src="{{ asset('images/logo.png') }}" class="w-10 h-10 object-contain">
                 <h1 class="text-xl font-bold text-[#6A2727]">Cena LIBRARY</h1>
             </div>
-            
-            <!-- Menu -->
-            <div class="px-6 text-gray-500 font-semibold mb-2">MENU</div>
-                <!-- home -->
-                <a href="Home" class="flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
-                    <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+
+            <nav class="px-4 space-y-2">
+                <!-- Menu -->
+                <div class="px-6 text-gray-500 font-semibold mb-2">MENU</div>
+
+                <!-- Home -->
+                <a href="{{ route('admin.home') }}" class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/>
                     </svg>
                     <span>Home</span>
                 </a>
-                <!-- students -->
-                 <a href="Student" class="flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
-                    <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+
+                <!-- Students -->
+                <a href="{{ route('admin.students') }}" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
-                    <span>Student</span>
+                    <span>Students</span>
                 </a>
-                 <!-- Library -->
-                  <a href="Library" class="flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
-                    <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+
+                <!-- Library -->
+                <a href="{{ route('admin.library') }}" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042v6.009c0 .904.732 1.636 1.636 1.636h4.708c.904 0 1.636-.732 1.636-1.636V6.042c0 .904-.732 1.636-1.636 1.636h-4.708c-.904 0-1.636.732-1.636 1.636z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.182 6.318a3 3 0 00-4.182 4.182c0 1.318.896 2.4 2.091 2.636V17.25H7.5V11.554c1.195-.236 2.091-1.318 2.091-2.636a3 3 0 00-4.182-4.182z"/>
                     </svg>
                     <span>Library</span>
                 </a>
@@ -36,26 +44,34 @@
 
              <!-- Header -->
             <div class="flex items-center justify-between border-b pb-4">
-                <h2 class="text-3xl font-bold text-[#6A2727]">Home</h2>
+                <h2 class="text-3xl font-bold text-[#6A2727]">Library Management</h2>
 
                 <div class="flex items-center space-x-6">
-
+                    <!-- Toggle -->
+                    <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
+                        <span class="font-semibold text-[#6A2727]">Admin</span>
+                    </div>
 
                     <!-- User -->
                     <div class="flex items-center space-x-2">
                         <div>
-                            <p class="text-sm font-semibold text-[#6A2727]">USER NAME</p>
+                            <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
                             <p class="text-xs text-[#6A2727]">Admin</p>
                         </div>
-                        <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
+                        <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full flex items-center justify-center">
+                            <span class="text-lg font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                        </div>
                     </div>
 
                     <!-- LOGOUT -->
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-6 h-6 text-[#a66a6a] cursor-pointer hover:text-red-700"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"d="M17 16l4-4m0 0l-4-4m4 4H7"/>
-                    </svg>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="w-6 h-6 text-[#a66a6a] hover:text-red-700 cursor-pointer transition-colors" title="Logout">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
+                            </svg>
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -185,8 +201,3 @@
         </main>
     </div>
 </x-layout>
-
-
-
-
-           

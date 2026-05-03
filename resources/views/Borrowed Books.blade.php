@@ -27,13 +27,7 @@
                     <span>Books</span>
                 </a>
                 <!-- Category -->
-                <a href="category" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24">
-                        <path d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <span>Category</span>
-                </a>
+               
                 <!-- Availability -->
                 <a href="availability" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -71,21 +65,23 @@
                 </div>
 
                 <!-- User -->
-                <div class="flex items-center space-x-2">
-                    <div>
-                        <p class="text-sm font-semibold text-[#6A2727]">USER NAME</p>
-                        <p class="text-xs text-[#6A2727]">Student</p>
+             <div class="flex items-center space-x-2">
+                        <div>
+                            <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-[#6A2727]">Student</p>
+                        </div>
+                        <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
                     </div>
-                    <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
-                </div>
 
                 <!-- LOGOUT -->
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    class="w-6 h-6 text-[#a66a6a] cursor-pointer hover:text-red-700"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7"/>
-                </svg>
+                 <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="w-6 h-6 text-[#a66a6a] hover:text-red-700 cursor-pointer transition-colors" title="Logout">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
+                            </svg>
+                        </button>
+                    </form>
             </div>
 
         </div>
