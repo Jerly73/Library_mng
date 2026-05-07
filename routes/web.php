@@ -14,10 +14,39 @@ Route::redirect('/', '/login');
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/books', function () {
-        return view('books');
+        $categoryNames = [
+            1 => 'Mathematics', 2 => 'Science',    3 => 'Literature',
+            4 => 'History',     5 => 'Geography',  6 => 'ICT',
+            7 => 'Fiction',     8 => 'Non-Fiction', 9 => 'Biography',
+            10 => 'Arts',       11 => 'Sports',    12 => 'Reference',
+        ];
+
+        $books = \App\Models\Book::all();
+        return view('books', compact('books', 'categoryNames'));
     })->name('books');
     Route::get('/books/{id}', function ($id) {
-        return view('books', ['categoryId' => $id]);
+        $categoryNames = [
+            1 => 'Mathematics', 2 => 'Science',    3 => 'Literature',
+            4 => 'History',     5 => 'Geography',  6 => 'ICT',
+            7 => 'Fiction',     8 => 'Non-Fiction', 9 => 'Biography',
+            10 => 'Arts',       11 => 'Sports',    12 => 'Reference',
+        ];
+
+        $allBooks = \App\Models\Book::all()->toArray();
+
+        $categoryId = $id;
+        $search = request('search', '');
+
+        $books = array_filter($allBooks, function($book) use ($categoryId, $search, $categoryNames) {
+            $matchCategory = !$categoryId || $book['category_id'] == $categoryId;
+            $matchSearch = !$search ||
+                stripos($book['title'], $search) !== false ||
+                stripos($book['author'], $search) !== false;
+            return $matchCategory && $matchSearch;
+        });
+
+        $currentCategory = $categoryNames[$categoryId] ?? 'Books';
+        return view('books', compact('books', 'categoryNames', 'currentCategory', 'categoryId'));
     })->name('books.category');
     Route::get('/category', function () {
         return view('category');
@@ -47,27 +76,30 @@ Route::middleware(['auth', 'admin'])->group(function () {
     })->name('admin.students');
 
     Route::get('/Library', function () {
-        return view('library', ['books' => session('books', [])]);
+        $books = \App\Models\Book::all();
+        return view('library', ['books' => $books]);
     })->name('admin.library');
 
     Route::post('/library/add', function (Request $request) {
-        $books = session('books', []);
-        $books[] = [
+        \App\Models\Book::create([
             'name' => $request->name,
             'writer' => $request->writer,
-            'id' => $request->book_id,
+            'book_id' => $request->book_id,
             'subject' => $request->subject,
             'class' => $request->class,
             'date' => $request->date,
-        ];
-        session(['books' => $books]);
+            'title' => $request->name,
+            'author' => $request->writer,
+            'category_id' => 1,
+            'cover' => 'book1.jpg',
+            'description' => '',
+            'status' => 'Available',
+        ]);
         return redirect()->back();
     })->name('admin.library.add');
 
     Route::delete('/library/delete/{id}', function ($id) {
-        $books = session('books', []);
-        unset($books[$id]);
-        session(['books' => array_values($books)]);
+        \App\Models\Book::findOrFail($id)->delete();
         return redirect()->back();
     })->name('admin.library.delete');
 });

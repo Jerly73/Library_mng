@@ -2,7 +2,7 @@
     <div class="flex min-h-screen bg-gray-100">
 
         <!-- Sidebar -->
-       <aside class="w-64 bg-white border-r sticky top-0 h-screen overflow-y-auto">
+        <aside class="w-64 bg-white border-r sticky top-0 h-screen overflow-y-auto">
             <div class="p-6 flex items-center space-x-2">
                 <img src="{{ asset('images/logo.png') }}" class="w-10 h-10 object-contain">
                 <h1 class="text-xl font-bold text-[#6A2727]">Cena LIBRARY</h1>
@@ -11,7 +11,7 @@
             <nav class="px-4 space-y-2">
                 <!-- Menu -->
                  <div class="px-6 text-gray-500 font-semibold mb-2">MENU</div>
-                 
+                
                 <!-- Dashboard -->
                 <a href="dashboard" class="flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
                     <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -53,58 +53,15 @@
      <!-- Header -->
      <div class="flex items-center justify-between border-b pb-4">
 
-        @php
-        $categoryNames = [
-            1 => 'Mathematics', 2 => 'Science',    3 => 'Literature',
-            4 => 'History',     5 => 'Geography',  6 => 'ICT',
-            7 => 'Fiction',     8 => 'Non-Fiction', 9 => 'Biography',
-            10 => 'Arts',       11 => 'Sports',    12 => 'Reference',
-        ];
-
-        $allBooks = [
-            ['id'=>1, 'title'=>'Calculus',              'author'=>'James Stewart',    'category_id'=>1,  'cover'=>'book1.jpg', 'description'=>'Fundamentals of differential and integral calculus.',   'status'=>'Available'],
-            ['id'=>2, 'title'=>'Algebra Basics',         'author'=>'Ron Larson',       'category_id'=>1,  'cover'=>'book1.jpg', 'description'=>'Core algebra concepts for students.',                    'status'=>'Available'],
-            ['id'=>3, 'title'=>'Biology Today',          'author'=>'Neil Campbell',    'category_id'=>2,  'cover'=>'book1.jpg', 'description'=>'Comprehensive guide to modern biology.',                 'status'=>'Reserved'],
-            ['id'=>4, 'title'=>'Physics Fundamentals',   'author'=>'Halliday',         'category_id'=>2,  'cover'=>'book1.jpg', 'description'=>'Core concepts in physics.',                              'status'=>'Available'],
-            ['id'=>5, 'title'=>'World Literature',       'author'=>'Various Authors',  'category_id'=>3,  'cover'=>'book1.jpg', 'description'=>'A collection of classic world literature.',              'status'=>'Available'],
-            ['id'=>6, 'title'=>'The Great Gatsby',       'author'=>'F. Scott Fitzgerald','category_id'=>3,'cover'=>'book1.jpg', 'description'=>'A tale of wealth and obsession in the Jazz Age.',       'status'=>'Available'],
-            ['id'=>7, 'title'=>'World History',          'author'=>'J.M. Roberts',     'category_id'=>4,  'cover'=>'book1.jpg', 'description'=>'A sweeping account of human civilization.',             'status'=>'Available'],
-            ['id'=>8, 'title'=>'Philippine History',     'author'=>'Teodoro Agoncillo','category_id'=>4, 'cover'=>'book1.jpg', 'description'=>'History of the Filipino people.',                       'status'=>'Reserved'],
-            ['id'=>9, 'title'=>'Physical Geography',     'author'=>'James Petersen',   'category_id'=>5,  'cover'=>'book1.jpg', 'description'=>'Introduction to earth\'s physical landscapes.',          'status'=>'Available'],
-            ['id'=>10,'title'=>'Computer Science',       'author'=>'Donald Knuth',     'category_id'=>6,  'cover'=>'book1.jpg', 'description'=>'Fundamentals of programming and algorithms.',           'status'=>'Available'],
-            ['id'=>11,'title'=>'Harry Potter',           'author'=>'J.K. Rowling',     'category_id'=>7,  'cover'=>'book1.jpg', 'description'=>'A young wizard\'s journey at Hogwarts.',                'status'=>'Available'],
-            ['id'=>12,'title'=>'Dune',                   'author'=>'Frank Herbert',    'category_id'=>7,  'cover'=>'book1.jpg', 'description'=>'Epic sci-fi set in a desert world.',                   'status'=>'Reserved'],
-            ['id'=>13,'title'=>'Sapiens',                'author'=>'Yuval Noah Harari','category_id'=>8,  'cover'=>'book1.jpg', 'description'=>'A brief history of humankind.',                        'status'=>'Available'],
-            ['id'=>14,'title'=>'Thinking Fast and Slow', 'author'=>'Daniel Kahneman',  'category_id'=>8,  'cover'=>'book1.jpg', 'description'=>'How our minds make decisions.',                        'status'=>'Available'],
-            ['id'=>15,'title'=>'My Story',               'author'=>'Michelle Obama',   'category_id'=>9,  'cover'=>'book1.jpg', 'description'=>'Memoir of the former First Lady.',                     'status'=>'Available'],
-            ['id'=>16,'title'=>'Leonardo da Vinci',      'author'=>'Walter Isaacson',  'category_id'=>9,  'cover'=>'book1.jpg', 'description'=>'Biography of the Renaissance genius.',                 'status'=>'Reserved'],
-            ['id'=>17,'title'=>'The Art of Drawing',     'author'=>'Gene Franks',      'category_id'=>10, 'cover'=>'book1.jpg', 'description'=>'Step-by-step drawing techniques.',                     'status'=>'Available'],
-            ['id'=>18,'title'=>'Sports Science',         'author'=>'Mike Young',       'category_id'=>11, 'cover'=>'book1.jpg', 'description'=>'The science behind athletic performance.',              'status'=>'Available'],
-            ['id'=>19,'title'=>'Encyclopedia Britannica','author'=>'Britannica',       'category_id'=>12, 'cover'=>'book1.jpg', 'description'=>'Comprehensive general reference encyclopedia.',         'status'=>'Available'],
-        ];
-
-        // Get category filter from either route parameter or query string
-        $categoryId = $categoryId ?? request('category', null);
-        $search = request('search', '');
-
-        $books = array_filter($allBooks, function($book) use ($categoryId, $search, $categoryNames) {
-            $matchCategory = !$categoryId || $book['category_id'] == $categoryId;
-            $matchSearch = !$search || 
-                stripos($book['title'], $search) !== false || 
-                stripos($book['author'], $search) !== false;
-            return $matchCategory && $matchSearch;
-        });
-
-        $currentCategory = $categoryId ? ($categoryNames[$categoryId] ?? 'Books') : 'All Books';
-        @endphp
+ 
 
         <h2 class="text-3xl font-bold text-[#6A2727]">
-            @if($categoryId && $search)
-                {{ $categoryNames[$categoryId] ?? 'Books' }} - Search: "{{ $search }}"
-            @elseif($categoryId)
-                {{ $categoryNames[$categoryId] ?? 'Books' }}
-            @elseif($search)
-                Search: "{{ $search }}"
+            @if(request('category') && request('search'))
+                {{ $categoryNames[request('category')] ?? 'Books' }} - Search: "{{ request('search') }}"
+            @elseif(request('category'))
+                {{ $categoryNames[request('category')] ?? 'Books' }}
+            @elseif(request('search'))
+                Search: "{{ request('search') }}"
             @else
                 All Books
             @endif
@@ -128,7 +85,7 @@
                 <select name="category" id="category" onchange="this.form.submit()" class="px-3 py-2 border rounded-md bg-white text-sm">
                     <option value="">All Categories</option>
                     @foreach($categoryNames as $id => $name)
-                        <option value="{{ $id }}" {{ $categoryId == $id ? 'selected' : '' }}>
+                        <option value="{{ $id }}" {{ request('category') == $id ? 'selected' : '' }}>
                             {{ $name }}
                         </option>
                     @endforeach
@@ -164,7 +121,7 @@
 
     <!-- All Books Button -->
     <div class="mb-6 mt-4 flex items-center gap-3">
-  
+   
     </div>
 
     <!-- BOOKS GRID -->
@@ -173,21 +130,21 @@
         <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition flex gap-4">
 
             <!-- IMAGE -->
-            <img src="{{ asset('images/' . $book['cover']) }}"
+            <img src="{{ asset('images/' . $book->cover) }}"
                 class="w-24 h-32 object-cover rounded">
 
             <!-- DETAILS -->
             <div class="flex-1">
-                <h3 class="font-bold text-lg">{{ $book['title'] }}</h3>
-                <p class="text-sm text-gray-500">{{ $book['author'] }}</p>
+                <h3 class="font-bold text-lg">{{ $book->title }}</h3>
+                <p class="text-sm text-gray-500">{{ $book->author }}</p>
 
                 <!-- TAG -->
                 <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
-                    {{ $categoryNames[$book['category_id']] ?? '' }}
+                    {{ $categoryNames[$book->category_id] ?? '' }}
                 </span>
 
                 <p class="text-xs text-gray-400 mt-2">
-                    {{ $book['description'] }}
+                    {{ $book->description }}
                 </p>
 
                 <!-- BUTTONS -->
@@ -195,8 +152,8 @@
                     <a class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded cursor-pointer">
                         Reserve
                     </a>
-                    <span class="{{ $book['status'] === 'Available' ? 'bg-blue-500' : 'bg-red-400' }} text-white px-3 py-1 rounded text-sm">
-                        {{ $book['status'] }}
+                    <span class="{{ $book->status === 'Available' ? 'bg-blue-500' : 'bg-red-400' }} text-white px-3 py-1 rounded text-sm">
+                        {{ $book->status }}
                     </span>
                 </div>
             </div>

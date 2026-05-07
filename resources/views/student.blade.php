@@ -42,85 +42,137 @@
         <!-- Main Content -->
         <main class="flex-1 p-6">
 
-            <!-- Header -->
-            <div class="flex items-center justify-between border-b pb-4">
-                <h2 class="text-3xl font-bold text-[#6A2727]">Students</h2>
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b pb-4">
+            <h2 class="text-3xl font-bold text-[#6A2727]">Borrow Book</h2>
 
-                <div class="flex items-center space-x-6">
-                    <!-- Toggle -->
-                    <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
-                        <span class="font-semibold text-[#6A2727]">Admin</span>
-                    </div>
-
-                    <!-- User -->
-                    <div class="flex items-center space-x-2">
-                        <div>
-                            <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-[#6A2727]">Admin</p>
-                        </div>
-                        <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full flex items-center justify-center">
-                            <span class="text-lg font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
-                        </div>
-                    </div>
-
-                    <!-- LOGOUT -->
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="w-6 h-6 text-[#a66a6a] hover:text-red-700 cursor-pointer transition-colors" title="Logout">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
-                            </svg>
-                        </button>
-                    </form>
+            <div class="flex items-center space-x-6">
+                <div class="bg-[#6A2727]/20 px-4 py-1 rounded">
+                    <span class="font-semibold text-[#6A2727]">Admin</span>
                 </div>
+
+                <div class="flex items-center space-x-2">
+                    <div>
+                        <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-500">Admin</p>
+                    </div>
+                    <div class="w-10 h-10 bg-[#6A2727]/30 rounded-full flex items-center justify-center">
+                        <span class="font-bold text-[#6A2727]">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        </span>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="text-[#6A2727] hover:text-red-600">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- BORROW FORM -->
+        <div class="bg-white rounded-xl shadow p-6 mt-6">
+            <h3 class="text-xl font-bold text-[#6A2727] mb-4">Borrow Book to Student</h3>
+
+            <form method="POST" action="#">
+                @csrf
+
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" placeholder="Enter Student ID"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+
+                    <input type="text" placeholder="Enter Book ID"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+
+                    <input type="date"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+
+                    <input type="date"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+                </div>
+
+                <div class="mt-4 text-right">
+                    <button class="bg-[#6A2727] text-white px-6 py-2 rounded hover:bg-[#4f1d1d]">
+                        BORROW BOOK
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- BORROWED LIST -->
+        <div class="bg-white rounded-xl shadow p-6 mt-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-[#6A2727]">Borrowed List</h3>
+
+                <input type="text" placeholder="Search by Student ID or Book ID..."
+                    class="border px-3 py-2 rounded focus:ring-2 focus:ring-[#6A2727]">
             </div>
 
-            <!-- Student List -->
-            <div class="bg-white rounded-xl shadow p-6 mt-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold text-[#6A2727]">Student List</h3>
-                    <div class="flex gap-2">
-                        <input type="text" placeholder="Search student..." class="border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]">
-                        <button class="bg-[#6A2727] text-white px-4 py-2 rounded hover:bg-[#4f1d1d]">
-                            Search
-                        </button>
-                    </div>
-                </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-[#f3e8e8] text-gray-700">
+                        <tr>
+                            <th class="p-3">#</th>
+                            <th class="p-3">Student ID</th>
+                            <th class="p-3">Student Name</th>
+                            <th class="p-3">Book ID</th>
+                            <th class="p-3">Book Title</th>
+                            <th class="p-3">Borrow Date</th>
+                            <th class="p-3">Due Date</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3">Action</th>
+                        </tr>
+                    </thead>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-[#f3e8e8] text-gray-700">
-                            <tr>
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Name</th>
-                                <th class="p-3">Email</th>
-                                <th class="p-3">Created At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($students as $student)
-                            <tr class="border-t hover:bg-gray-50">
-                                <td class="p-3">{{ $student->id }}</td>
-                                <td class="p-3 font-medium">{{ $student->name }}</td>
-                                <td class="p-3">{{ $student->email }}</td>
-                                <td class="p-3">{{ $student->created_at->format('Y-m-d') }}</td>
-                            </tr>
-                            @empty
-                            <tr class="border-t">
-                                <td colspan="4" class="p-4 text-center text-gray-500">No students found</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                    <tbody>
+                        @php
+                        $records = [
+                            ['id'=>1,'sid'=>'2024-00123','name'=>'Juan Dela Cruz','bid'=>'BK-00045','title'=>'The Alchemist','bdate'=>'2024-04-20','ddate'=>'2024-05-04','status'=>'Borrowed'],
+                            ['id'=>2,'sid'=>'2024-00145','name'=>'Maria Santos','bid'=>'BK-00012','title'=>'To Kill a Mockingbird','bdate'=>'2024-04-19','ddate'=>'2024-05-03','status'=>'Borrowed'],
+                            ['id'=>3,'sid'=>'2024-00178','name'=>'Pedro Reyes','bid'=>'BK-00067','title'=>'Rich Dad Poor Dad','bdate'=>'2024-04-18','ddate'=>'2024-05-02','status'=>'Overdue'],
+                            ['id'=>4,'sid'=>'2024-00191','name'=>'Ana Garcia','bid'=>'BK-00033','title'=>'Harry Potter','bdate'=>'2024-04-17','ddate'=>'2024-05-01','status'=>'Borrowed'],
+                        ];
+                        @endphp
 
-                @if(isset($students) && $students->count() > 0)
-                <div class="mt-4 text-sm text-gray-500">
-                    Showing {{ $students->count() }} student(s)
-                </div>
-                @endif
+                        @foreach($records as $r)
+                        <tr class="border-t hover:bg-gray-50">
+                            <td class="p-3">{{ $r['id'] }}</td>
+                            <td class="p-3">{{ $r['sid'] }}</td>
+                            <td class="p-3">{{ $r['name'] }}</td>
+                            <td class="p-3">{{ $r['bid'] }}</td>
+                            <td class="p-3">{{ $r['title'] }}</td>
+                            <td class="p-3">{{ $r['bdate'] }}</td>
+                            <td class="p-3">{{ $r['ddate'] }}</td>
+
+                            <td class="p-3">
+                                <span class="px-3 py-1 rounded-full text-xs
+                                    {{ $r['status']=='Overdue' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
+                                    {{ $r['status'] }}
+                                </span>
+                            </td>
+
+                            <td class="p-3">
+                                <button class="border px-3 py-1 rounded text-[#6A2727] hover:bg-[#6A2727] hover:text-white">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
 
-        </main>
+            <div class="flex justify-between items-center mt-4 text-sm text-gray-500">
+                <span>Showing 1 to 4 of 4 borrowed records</span>
+
+                <button class="bg-[#6A2727] text-white px-4 py-2 rounded hover:bg-[#4f1d1d]">
+                    VIEW ALL TRANSACTIONS
+                </button>
+            </div>
+        </div>
+
+    </main>
     </div>
 </x-layout>

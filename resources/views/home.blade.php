@@ -44,7 +44,7 @@
 
              <!-- Header -->
             <div class="flex items-center justify-between border-b pb-4">
-                <h2 class="text-3xl font-bold text-[#6A2727]">Library Management</h2>
+                <h2 class="text-3xl font-bold text-[#6A2727]">Home</h2>
 
                 <div class="flex items-center space-x-6">
                     <!-- Toggle -->
@@ -179,21 +179,21 @@
                 <div class="bg-white rounded-lg shadow p-4 space-y-4">
                     <h3 class="font-semibold text-red-900">Quick Actions</h3>
 
-                    <button class="w-full py-2 bg-gray-200 rounded">
+                    <a href="{{ route('admin.library') }}" class="block w-full py-2 bg-gray-200 rounded text-center hover:bg-gray-300 transition">
                         Add New Book
-                    </button>
+                    </a>
 
-                    <button class="w-full py-2 bg-gray-200 rounded">
+                    <a href="{{ route('admin.students') }}" class="block w-full py-2 bg-gray-200 rounded text-center hover:bg-gray-300 transition">
                         Register Student
-                    </button>
+                    </a>
 
-                    <button class="w-full py-2 bg-yellow-300 rounded">
+                    <a href="{{ route('admin.library') }}" class="block w-full py-2 bg-yellow-300 rounded text-center hover:bg-yellow-400 transition">
                         Issue Book
-                    </button>
+                    </a>
 
-                    <button class="w-full py-2 bg-pink-300 rounded">
+                    <a href="{{ route('admin.library') }}" class="block w-full py-2 bg-pink-300 rounded text-center hover:bg-pink-400 transition">
                         Return Book
-                    </button>
+                    </a>
                 </div>
 
             </div>

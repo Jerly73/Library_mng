@@ -117,17 +117,17 @@
                             </tr>
                         </thead>
                         <tbody id="booksTableBody">
-                            @forelse($books as $index => $book)
-                            <tr class="border-t" data-id="{{ $index }}">
-                                <td class="p-3">{{ $index + 1 }}</td>
-                                <td class="p-3">{{ $book['name'] }}</td>
-                                <td class="p-3">{{ $book['writer'] }}</td>
-                                <td class="p-3">{{ $book['id'] }}</td>
-                                <td class="p-3">{{ $book['subject'] }}</td>
-                                <td class="p-3">{{ $book['class'] }}</td>
-                                <td class="p-3">{{ $book['date'] }}</td>
-                                <td class="p-3">
-                                    <form method="POST" action="{{ route('admin.library.delete', $index) }}" class="inline" onsubmit="return confirm('Delete this book?');">
+                             @forelse($books as $index => $book)
+                             <tr class="border-t" data-id="{{ $index }}">
+                                 <td class="p-3">{{ $index + 1 }}</td>
+                                 <td class="p-3">{{ $book->name }}</td>
+                                 <td class="p-3">{{ $book->writer }}</td>
+                                 <td class="p-3">{{ $book->book_id }}</td>
+                                 <td class="p-3">{{ $book->subject }}</td>
+                                 <td class="p-3">{{ $book->class }}</td>
+                                 <td class="p-3">{{ $book->date }}</td>
+                                 <td class="p-3">
+                                     <form method="POST" action="{{ route('admin.library.delete', $book->id) }}" class="inline" onsubmit="return confirm('Delete this book?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700 font-medium">
