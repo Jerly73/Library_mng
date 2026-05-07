@@ -12,12 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->string('name');
-            $table->string('writer');
-            $table->string('book_id')->unique();
-            $table->string('subject');
-            $table->string('class');
-            $table->date('date');
+            $table->string('title')->nullable();
+            $table->string('author')->nullable();
         });
     }
 
@@ -27,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->dropColumn(['name', 'writer', 'book_id', 'subject', 'class', 'date']);
+            $table->dropColumn(['title', 'author']);
         });
     }
 };

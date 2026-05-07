@@ -13,11 +13,13 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@umindanao.edu.ph',
-            'password' => Hash::make('admin1234'),
-            'role' => 'admin',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@umindanao.edu.ph'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('admin1234'),
+                'role' => 'admin',
+            ]
+        );
     }
 }

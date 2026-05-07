@@ -17,5 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // Call AdminSeeder to create admin account
         $this->call(AdminSeeder::class);
+        
+        // Call BookSeeder to create book records
+        $this->call(BookSeeder::class);
+        
+        // Call StudentSeeder to create student records
+        $this->call(StudentSeeder::class);
+        
+        // Call IssueSeeder to create issue records
+        $this->call(IssueSeeder::class);
     }
 }
