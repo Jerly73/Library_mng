@@ -20,4 +20,9 @@ class Book extends Model
         'description',
         'status',
     ];
+
+    public function issues()
+    {
+        return $this->hasMany(Issue::class);
+    }
 }

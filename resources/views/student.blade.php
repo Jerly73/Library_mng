@@ -72,33 +72,77 @@
             </div>
         </div>
 
+        <!-- AVAILABLE BOOKS -->
+        <div class="bg-white rounded-xl shadow p-6 mt-6">
+            <h3 class="text-xl font-bold text-[#6A2727] mb-4">Available Books</h3>
+
+            @php
+            $availableBooks = \App\Models\Book::where('status', 'Available')->get();
+            @endphp
+
+            @if($availableBooks->count() > 0)
+            <div class="grid grid-cols-3 gap-4">
+                @foreach($availableBooks as $book)
+                <div class="border rounded p-4 hover:shadow-md transition">
+                    <h4 class="font-bold text-sm">{{ $book->title }}</h4>
+                    <p class="text-xs text-gray-500">{{ $book->author }}</p>
+                    <p class="text-xs text-gray-400 mt-1">ID: {{ $book->book_id }}</p>
+                    <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-600 text-xs rounded">
+                        Available
+                    </span>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <p class="text-gray-500 text-center py-4">No books available for borrowing.</p>
+            @endif
+        </div>
+
         <!-- BORROW FORM -->
         <div class="bg-white rounded-xl shadow p-6 mt-6">
             <h3 class="text-xl font-bold text-[#6A2727] mb-4">Borrow Book to Student</h3>
 
-            <form method="POST" action="#">
+            <form method="POST" action="{{ route('borrow.book') }}">
                 @csrf
 
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" placeholder="Enter Student ID"
-                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+                    <input type="text" name="student_id" placeholder="Enter Student ID"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]" required>
 
-                    <input type="text" placeholder="Enter Book ID"
-                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+                    <select name="book_id" class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]" required>
+                        <option value="">Select Available Book</option>
+                        @foreach($availableBooks as $book)
+                        <option value="{{ $book->id }}">
+                            {{ $book->title }} (ID: {{ $book->book_id }})
+                        </option>
+                        @endforeach
+                    </select>
 
-                    <input type="date"
-                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+                    <input type="date" name="borrow_date" placeholder="Borrow Date"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]" required>
 
-                    <input type="date"
-                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+                    <input type="date" name="due_date" placeholder="Due Date"
+                        class="border p-2 rounded focus:ring-2 focus:ring-[#6A2727]" required>
                 </div>
 
                 <div class="mt-4 text-right">
-                    <button class="bg-[#6A2727] text-white px-6 py-2 rounded hover:bg-[#4f1d1d]">
+                    <button type="submit" class="bg-[#6A2727] text-white px-6 py-2 rounded hover:bg-[#4f1d1d]">
                         BORROW BOOK
                     </button>
                 </div>
             </form>
+
+            @if(session('success'))
+            <div class="mt-4 p-3 bg-green-100 text-green-700 rounded">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="mt-4 p-3 bg-red-100 text-red-700 rounded">
+                {{ session('error') }}
+            </div>
+            @endif
         </div>
 
         <!-- BORROWED LIST -->
@@ -109,6 +153,13 @@
                 <input type="text" placeholder="Search by Student ID or Book ID..."
                     class="border px-3 py-2 rounded focus:ring-2 focus:ring-[#6A2727]">
             </div>
+
+            @php
+            $borrowedIssues = \App\Models\Issue::with('book')
+                ->where('status', 'Borrowed')
+                ->orderBy('due_date', 'asc')
+                ->get();
+            @endphp
 
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
@@ -127,50 +178,46 @@
                     </thead>
 
                     <tbody>
-                        @php
-                        $records = [
-                            ['id'=>1,'sid'=>'2024-00123','name'=>'Juan Dela Cruz','bid'=>'BK-00045','title'=>'The Alchemist','bdate'=>'2024-04-20','ddate'=>'2024-05-04','status'=>'Borrowed'],
-                            ['id'=>2,'sid'=>'2024-00145','name'=>'Maria Santos','bid'=>'BK-00012','title'=>'To Kill a Mockingbird','bdate'=>'2024-04-19','ddate'=>'2024-05-03','status'=>'Borrowed'],
-                            ['id'=>3,'sid'=>'2024-00178','name'=>'Pedro Reyes','bid'=>'BK-00067','title'=>'Rich Dad Poor Dad','bdate'=>'2024-04-18','ddate'=>'2024-05-02','status'=>'Overdue'],
-                            ['id'=>4,'sid'=>'2024-00191','name'=>'Ana Garcia','bid'=>'BK-00033','title'=>'Harry Potter','bdate'=>'2024-04-17','ddate'=>'2024-05-01','status'=>'Borrowed'],
-                        ];
-                        @endphp
-
-                        @foreach($records as $r)
+                        @forelse($borrowedIssues as $index => $issue)
                         <tr class="border-t hover:bg-gray-50">
-                            <td class="p-3">{{ $r['id'] }}</td>
-                            <td class="p-3">{{ $r['sid'] }}</td>
-                            <td class="p-3">{{ $r['name'] }}</td>
-                            <td class="p-3">{{ $r['bid'] }}</td>
-                            <td class="p-3">{{ $r['title'] }}</td>
-                            <td class="p-3">{{ $r['bdate'] }}</td>
-                            <td class="p-3">{{ $r['ddate'] }}</td>
-
+                            <td class="p-3">{{ $index + 1 }}</td>
+                            <td class="p-3">{{ $issue->student_id }}</td>
+                            <td class="p-3">-</td>
+                            <td class="p-3">{{ $issue->book->book_id }}</td>
+                            <td class="p-3">{{ $issue->book->title }}</td>
+                            <td class="p-3">{{ $issue->borrow_date }}</td>
+                            <td class="p-3">{{ $issue->due_date }}</td>
                             <td class="p-3">
-                                <span class="px-3 py-1 rounded-full text-xs
-                                    {{ $r['status']=='Overdue' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
-                                    {{ $r['status'] }}
+                                <span class="px-3 py-1 rounded-full text-xs bg-green-100 text-green-600">
+                                    {{ $issue->status }}
                                 </span>
                             </td>
-
                             <td class="p-3">
-                                <button class="border px-3 py-1 rounded text-[#6A2727] hover:bg-[#6A2727] hover:text-white">
-                                    View
-                                </button>
+                                <form method="POST" action="{{ route('return.book') }}" class="inline" onsubmit="return confirm('Return this book?');">
+                                    @csrf
+                                    <input type="hidden" name="book_id" value="{{ $issue->book_id }}">
+                                    <input type="hidden" name="student_id" value="{{ $issue->student_id }}">
+                                    <input type="hidden" name="return_date" value="{{ date('Y-m-d') }}">
+                                    <button type="submit" class="border px-3 py-1 rounded text-[#6A2727] hover:bg-[#6A2727] hover:text-white">
+                                        Return
+                                    </button>
+                                </form>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="9" class="p-4 text-center text-gray-500">No borrowed records found.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
 
+            @if($borrowedIssues->count() > 0)
             <div class="flex justify-between items-center mt-4 text-sm text-gray-500">
-                <span>Showing 1 to 4 of 4 borrowed records</span>
-
-                <button class="bg-[#6A2727] text-white px-4 py-2 rounded hover:bg-[#4f1d1d]">
-                    VIEW ALL TRANSACTIONS
-                </button>
+                <span>Showing {{ $borrowedIssues->count() }} borrowed record(s)</span>
             </div>
+            @endif
         </div>
 
     </main>

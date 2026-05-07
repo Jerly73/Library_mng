@@ -87,7 +87,22 @@
                         <input name="writer" placeholder="Writer" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]" required>
                         <input name="book_id" placeholder="Book ID" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]" required>
                         <input name="subject" placeholder="Subject" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]" required>
-                        <input name="class" placeholder="Class" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]" required>
+
+                        <select name="category_id" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]" required>
+                            <option value="">Select Category</option>
+                            @php
+                            $categories = [
+                                1 => 'Mathematics', 2 => 'Science', 3 => 'Literature',
+                                4 => 'History', 5 => 'Geography', 6 => 'ICT',
+                                7 => 'Fiction', 8 => 'Non-Fiction', 9 => 'Biography',
+                                10 => 'Arts', 11 => 'Sports', 12 => 'Reference',
+                            ];
+                            @endphp
+                            @foreach($categories as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                        </select>
+
                         <input type="date" name="date" class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-[#6A2727]" required>
                     </div>
 
@@ -111,22 +126,30 @@
                                 <th class="p-3">Writer</th>
                                 <th class="p-3">ID</th>
                                 <th class="p-3">Subject</th>
-                                <th class="p-3">Class</th>
+                                <th class="p-3">Category</th>
                                 <th class="p-3">Date</th>
                                 <th class="p-3">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="booksTableBody">
-                             @forelse($books as $index => $book)
-                             <tr class="border-t" data-id="{{ $index }}">
-                                 <td class="p-3">{{ $index + 1 }}</td>
-                                 <td class="p-3">{{ $book->name }}</td>
-                                 <td class="p-3">{{ $book->writer }}</td>
-                                 <td class="p-3">{{ $book->book_id }}</td>
-                                 <td class="p-3">{{ $book->subject }}</td>
-                                 <td class="p-3">{{ $book->class }}</td>
-                                 <td class="p-3">{{ $book->date }}</td>
-                                 <td class="p-3">
+                         <tbody id="booksTableBody">
+                              @php
+                              $categoryNames = [
+                                  1 => 'Mathematics', 2 => 'Science', 3 => 'Literature',
+                                  4 => 'History', 5 => 'Geography', 6 => 'ICT',
+                                  7 => 'Fiction', 8 => 'Non-Fiction', 9 => 'Biography',
+                                  10 => 'Arts', 11 => 'Sports', 12 => 'Reference',
+                              ];
+                              @endphp
+                              @forelse($books as $index => $book)
+                              <tr class="border-t" data-id="{{ $index }}">
+                                  <td class="p-3">{{ $index + 1 }}</td>
+                                  <td class="p-3">{{ $book->name }}</td>
+                                  <td class="p-3">{{ $book->writer }}</td>
+                                  <td class="p-3">{{ $book->book_id }}</td>
+                                  <td class="p-3">{{ $book->subject }}</td>
+                                  <td class="p-3">{{ $categoryNames[$book->category_id] ?? 'Unknown' }}</td>
+                                  <td class="p-3">{{ $book->date }}</td>
+                                  <td class="p-3">
                                      <form method="POST" action="{{ route('admin.library.delete', $book->id) }}" class="inline" onsubmit="return confirm('Delete this book?');">
                                         @csrf
                                         @method('DELETE')

@@ -86,17 +86,56 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'writer' => $request->writer,
             'book_id' => $request->book_id,
             'subject' => $request->subject,
-            'class' => $request->class,
             'date' => $request->date,
             'title' => $request->name,
             'author' => $request->writer,
-            'category_id' => 1,
+            'category_id' => $request->category_id,
             'cover' => 'book1.jpg',
             'description' => '',
             'status' => 'Available',
+            'class' => '',
         ]);
         return redirect()->back();
     })->name('admin.library.add');
+
+    // Student borrow book
+    Route::post('/borrow', function (Request $request) {
+        $book = \App\Models\Book::findOrFail($request->book_id);
+        
+        if ($book->status !== 'Available') {
+            return back()->with('error', 'Book is not available for borrowing.');
+        }
+
+        \App\Models\Issue::create([
+            'student_id' => $request->student_id,
+            'book_id' => $request->book_id,
+            'borrow_date' => $request->borrow_date,
+            'due_date' => $request->due_date,
+            'status' => 'Borrowed',
+        ]);
+
+        $book->update(['status' => 'Borrowed']);
+
+        return back()->with('success', 'Book borrowed successfully!');
+    })->name('borrow.book');
+
+    // Student return book
+    Route::post('/return', function (Request $request) {
+        $issue = \App\Models\Issue::where('book_id', $request->book_id)
+                                   ->where('student_id', $request->student_id)
+                                   ->where('status', 'Borrowed')
+                                   ->firstOrFail();
+
+        $issue->update([
+            'return_date' => $request->return_date,
+            'status' => 'Returned',
+        ]);
+
+        $book = \App\Models\Book::findOrFail($request->book_id);
+        $book->update(['status' => 'Available']);
+
+        return back()->with('success', 'Book returned successfully!');
+    })->name('return.book');
 
     Route::delete('/library/delete/{id}', function ($id) {
         \App\Models\Book::findOrFail($id)->delete();
