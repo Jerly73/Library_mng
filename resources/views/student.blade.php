@@ -72,34 +72,11 @@
             </div>
         </div>
 
-        <!-- AVAILABLE BOOKS -->
+        <!-- BORROW FORM -->
         <div class="bg-white rounded-xl shadow p-6 mt-6">
-            <h3 class="text-xl font-bold text-[#6A2727] mb-4">Available Books</h3>
-
             @php
             $availableBooks = \App\Models\Book::where('status', 'Available')->get();
             @endphp
-
-            @if($availableBooks->count() > 0)
-            <div class="grid grid-cols-3 gap-4">
-                @foreach($availableBooks as $book)
-                <div class="border rounded p-4 hover:shadow-md transition">
-                    <h4 class="font-bold text-sm">{{ $book->title }}</h4>
-                    <p class="text-xs text-gray-500">{{ $book->author }}</p>
-                    <p class="text-xs text-gray-400 mt-1">ID: {{ $book->book_id }}</p>
-                    <span class="inline-block mt-2 px-2 py-1 bg-green-100 text-green-600 text-xs rounded">
-                        Available
-                    </span>
-                </div>
-                @endforeach
-            </div>
-            @else
-            <p class="text-gray-500 text-center py-4">No books available for borrowing.</p>
-            @endif
-        </div>
-
-        <!-- BORROW FORM -->
-        <div class="bg-white rounded-xl shadow p-6 mt-6">
             <h3 class="text-xl font-bold text-[#6A2727] mb-4">Borrow Book to Student</h3>
 
             <form method="POST" action="{{ route('borrow.book') }}">
