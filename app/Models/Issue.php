@@ -22,6 +22,6 @@ class Issue extends Model
 
     public function student()
     {
-        return $this->belongsTo(Students::class);
+        return $this->belongsTo(\App\Models\User::class, 'student_id');
     }
 }

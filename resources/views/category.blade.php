@@ -10,10 +10,11 @@
 
             <nav class="px-4 space-y-2">
                 <!-- Menu -->
-            <div class="px-6 text-gray-500 font-semibold mb-2">MENU</div>
+                <div class="px-6 text-gray-500 font-semibold mb-2">MENU</div>
+                
                 <!-- Dashboard -->
-                <a href="dashboard" class="flex items-center space-x-2 px-4 py-2  hover:bg-gray-200 rounded">
-                    <svg xmlns= "http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <a href="dashboard" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3"/>
                     </svg>
                     <span>Dashboard</span>
@@ -26,10 +27,18 @@
                     <span>Books</span>
                 </a>
                 <!-- Category -->
-                
+                <a href="/category" class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M3 7h18M3 12h18M3 17h18"/>
+                    </svg>
+                    <span>Category</span>
+                </a>
+
                 <!-- Availability -->
-                <a href="availability" class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg"fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" >
+                <a href="availability" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
                         <path d="M5 12l4 4 10-10 2 2-12 12-6-6z"/>
                     </svg>
                     <span>Availability</span>
@@ -63,13 +72,12 @@
 
             <!-- Header -->
             <div class="flex items-center justify-between border-b pb-4">
-                <h2 class="text-3xl font-bold text-[#6A2727]">Availability</h2>
+                <h2 class="text-3xl font-bold text-[#6A2727]">Category</h2>
 
                 <div class="flex items-center space-x-6">
-                    <!-- Toggle -->
+                    <!-- Student Badge -->
                     <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
                         <span class="font-semibold text-[#6A2727]">Student</span>
-                        
                     </div>
 
                     <!-- User -->
@@ -84,7 +92,7 @@
                     </div>
 
                     <!-- LOGOUT -->
-                     <form method="POST" action="{{ route('logout') }}" class="inline">
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" title="Logout" class="text-[#6A2727]/50 hover:text-[#6A2727] transition-colors cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5">
@@ -92,48 +100,15 @@
                             </svg>
                         </button>
                     </form>
-                        </div>
-                    </div>
-
-            <div class="bg-white rounded-xl shadow overflow-hidden">
-
-                <!-- HEADER -->
-                <div class="grid grid-cols-3 bg-gray-100 px-6 py-3 font-semibold text-gray-500">
-                    <div>Book Title</div>
-                    <div>Category</div>
-                    <div>Status</div>
                 </div>
+            </div>
 
-                <!-- DATA -->
-                @foreach($books as $book)
-                <div class="grid grid-cols-3 items-center px-6 py-4 border-t">
-
-                    <!-- TITLE -->
-                    <div class="flex items-center gap-3">
-                        <span class="font-medium">{{ $book->title }}</span>
-                    </div>
-
-                    <!-- CATEGORY -->
-                    <div class="flex items-center gap-2 text-gray-600">
-                        <span>{{ $categoryNames[$book->category_id] ?? '' }}</span>
-                    </div>
-
-                    <!-- STATUS -->
-                    <div>
-                        @if($book->status == 'Available')
-                            <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
-                                Available
-                            </span>
-                        @else
-                            <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium">
-                                Borrowed
-                            </span>
-                        @endif
-                    </div>
-
+            <!-- Category Content -->
+            <div class="mt-6">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Manage Categories</h3>
+                    <p class="text-gray-600">Category management page - coming soon.</p>
                 </div>
-                @endforeach
-
             </div>
 
         </main>

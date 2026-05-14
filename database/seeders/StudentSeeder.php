@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Students;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class StudentSeeder extends Seeder
 {
@@ -13,20 +14,27 @@ class StudentSeeder extends Seeder
      */
     public function run(): void
     {
-        // Clear existing students to avoid duplicates
-        Students::query()->delete();
+        // Create student USER accounts (for authentication and issues.student_id reference)
+        User::updateOrCreate(
+            ['id' => 1],
+            [
+                'name' => 'Juan Dela Cruz',
+                'email' => 'student1@umindanao.edu.ph',
+                'password' => Hash::make('student1234'),
+                'role' => 'student',
+            ]
+        );
 
-        Students::insert([
+        User::updateOrCreate(
+            ['id' => 2],
             [
-                'id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+                'name' => 'Maria Santos',
+                'email' => 'student2@umindanao.edu.ph',
+                'password' => Hash::make('student1234'),
+                'role' => 'student',
+            ]
+        );
+
+      
     }
 }

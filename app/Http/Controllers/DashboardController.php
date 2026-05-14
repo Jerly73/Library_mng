@@ -9,6 +9,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard');
+        $books = \App\Models\Book::all();
+        return view('dashboard', compact('books'));
     }
 }

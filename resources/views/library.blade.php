@@ -36,11 +36,32 @@
                     </svg>
                     <span>Library</span>
                 </a>
+
+                <!-- Pending Requests -->
+                <a href="{{ route('admin.pending.requests') }}" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h6M12 6l-4-4m0 0l-4 4m4-4v6m0 0l4-4m-4 4l4 4m-4-4h6"/>
+                    </svg>
+                    <span>Pending Requests</span>
+                </a>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="flex-1 p-6">
+
+            <!-- Flash Messages -->
+            @if(session('success'))
+            <div class="mb-4 p-3 bg-green-100 text-green-700 rounded shadow-sm">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="mb-4 p-3 bg-red-100 text-red-700 rounded shadow-sm">
+                {{ session('error') }}
+            </div>
+            @endif
 
             <!-- Header -->
             <div class="flex items-center justify-between border-b pb-4">
@@ -58,17 +79,17 @@
                             <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
                             <p class="text-xs text-[#6A2727]">Admin</p>
                         </div>
-                        <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full flex items-center justify-center">
+                        <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full flex items-center justify-center cursor-pointer" onclick="alert('User ID: {{ Auth::id() }}')" title="Click to see User ID">
                             <span class="text-lg font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                         </div>
                     </div>
 
                     <!-- LOGOUT -->
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                   <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
-                        <button type="submit" class="w-6 h-6 text-[#a66a6a] hover:text-red-700 cursor-pointer transition-colors" title="Logout">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
+                        <button type="submit" title="Logout" class="text-[#6A2727]/50 hover:text-[#6A2727] transition-colors cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"/>
                             </svg>
                         </button>
                     </form>

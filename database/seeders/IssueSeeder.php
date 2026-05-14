@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Book;
 use App\Models\Issue;
-use App\Models\Students;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,9 +15,9 @@ class IssueSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get student and book instances
-        $student1 = Students::find(1);
-        $student2 = Students::find(2);
+        // Get student users (must exist with IDs 1,2 from StudentSeeder)
+        $student1 = User::find(1);
+        $student2 = User::find(2);
         $book1 = Book::find(1);
         $book2 = Book::find(2);
 

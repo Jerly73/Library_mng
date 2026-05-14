@@ -27,7 +27,8 @@
                     <span>Books</span>
                 </a>
                 <!-- Category -->
-              
+               
+
                 <!-- Availability -->
                 <a href="availability" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -37,7 +38,7 @@
                     <span>Availability</span>
                 </a>
                 <!-- Borrowed Books -->
-                <a href="Borrowed Books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                <a href="borrowed-books" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                         viewBox="0 0 24 24">
                         <path d="M12 6l-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h4l2-2m0-12l2-2h4a2 2 0 012 2v12a2 2 0 01-2 2h-4l-2-2"/>
@@ -47,56 +48,46 @@
             </nav>
         </aside>
 
-       <!-- Main Content -->
-<main class="flex-1 p-6">
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
 
-     <!-- Header -->
-     <div class="flex items-center justify-between border-b pb-4">
-
- 
-
-        <h2 class="text-3xl font-bold text-[#6A2727]">
-            @if(request('category') && request('search'))
-                {{ $categoryNames[request('category')] ?? 'Books' }} - Search: "{{ request('search') }}"
-            @elseif(request('category'))
-                {{ $categoryNames[request('category')] ?? 'Books' }}
-            @elseif(request('search'))
-                Search: "{{ request('search') }}"
-            @else
-                All Books
+            <!-- Flash Messages -->
+            @if(session('success'))
+            <div class="mb-4 p-3 bg-green-100 text-green-700 rounded shadow-sm">
+                {{ session('success') }}
+            </div>
             @endif
-        </h2>
 
-        <div class="flex items-center gap-3">
-            <!-- Search -->
-            <form method="GET" action="/books" class="flex items-center gap-2">
-                <input 
-                    type="text" 
-                    name="search" 
-                    value="{{ request('search') }}" 
-                    placeholder="Search books..." 
-                    class="px-3 py-2 border rounded-md bg-white text-sm w-48"
-                >
-            </form>
+            @if(session('error'))
+            <div class="mb-4 p-3 bg-red-100 text-red-700 rounded shadow-sm">
+                {{ session('error') }}
+            </div>
+            @endif
 
-            <!-- Category Filter -->
-            <form method="GET" action="/books" class="flex items-center gap-2">
-                <label for="category" class="text-sm font-semibold text-[#6A2727]">Filter by Category:</label>
-                <select name="category" id="category" onchange="this.form.submit()" class="px-3 py-2 border rounded-md bg-white text-sm">
-                    <option value="">All Categories</option>
-                    @foreach($categoryNames as $id => $name)
-                        <option value="{{ $id }}" {{ request('category') == $id ? 'selected' : '' }}>
-                            {{ $name }}
-                        </option>
-                    @endforeach
-                </select>
-                @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                @endif
-            </form>
+      <!-- Header -->
+     <div class="flex items-center justify-between border-b pb-4">
+                <h2 class="text-3xl font-bold text-[#6A2727]">
+                   
+                        Books
+                 
+                </h2>
 
-            <!-- Toggle -->
-            <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
+                <div class="flex items-center gap-3">
+<!-- Search -->
+                     <form method="GET" action="/books" class="flex items-center">
+                         @if(isset($category) && $category)
+                             <input type="hidden" name="category" value="{{ $category }}">
+                         @endif
+                         <input
+                             type="text"
+                             name="search"
+                             value="{{ request('search') }}"
+                             placeholder="Search books..."
+                             class="px-3 py-1.5 border border-gray-300 rounded-lg bg-white text-sm w-44 focus:outline-none focus:border-[#6A2727]"
+                         >
+                     </form>
+
+                       <div class="bg-[#6A2727]/36 px-4 py-1 rounded flex space-x-2">
                 <span class="font-semibold text-[#6A2727]">Student</span>
             </div>
             <!-- User -->
@@ -105,67 +96,99 @@
                     <p class="text-sm font-semibold text-[#6A2727]">{{ Auth::user()->name }}</p>
                     <p class="text-xs text-[#6A2727]">Student</p>
                 </div>
-                <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full"></div>
-            </div>
-            <!-- LOGOUT -->
-            <form method="POST" action="{{ route('logout') }}" class="inline">
-                @csrf
-                <button type="submit" class="w-6 h-6 text-[#a66a6a] hover:text-red-700 cursor-pointer transition-colors" title="Logout">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
-                    </svg>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- All Books Button -->
-    <div class="mb-6 mt-4 flex items-center gap-3">
-   
-    </div>
-
-    <!-- BOOKS GRID -->
-    <div class="grid grid-cols-3 gap-6">
-        @forelse($books as $book)
-        <div class="bg-white p-4 rounded-xl shadow hover:shadow-lg transition flex gap-4">
-
-            <!-- IMAGE -->
-            <img src="{{ asset('images/' . $book->cover) }}"
-                class="w-24 h-32 object-cover rounded">
-
-            <!-- DETAILS -->
-            <div class="flex-1">
-                <h3 class="font-bold text-lg">{{ $book->title }}</h3>
-                <p class="text-sm text-gray-500">{{ $book->author }}</p>
-
-                <!-- TAG -->
-                <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
-                    {{ $categoryNames[$book->category_id] ?? '' }}
-                </span>
-
-                <p class="text-xs text-gray-400 mt-2">
-                    {{ $book->description }}
-                </p>
-
-                <!-- BUTTONS -->
-                <div class="flex justify-between items-center mt-3">
-                    <a class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded cursor-pointer">
-                        Reserve
-                    </a>
-                    <span class="{{ $book->status === 'Available' ? 'bg-blue-500' : 'bg-red-400' }} text-white px-3 py-1 rounded text-sm">
-                        {{ $book->status }}
-                    </span>
+                <div class="w-10 h-10 bg-[#6A2727]/36 rounded-full flex items-center justify-center cursor-pointer" onclick="alert('User ID: {{ Auth::id() }}')" title="Click to see User ID">
+                    <span class="text-lg font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
                 </div>
             </div>
-        </div>
 
-        @empty
-        <div class="col-span-3 text-center py-16 text-gray-400">
-            <p class="text-lg">{{ request('search') ? 'No books match your search.' : 'No books found in this category.' }}</p>
-            <a href="/books" class="text-[#6A2727] underline text-sm mt-2 inline-block">← View all books</a>
-        </div>
-        @endforelse
-    </div>
-</main>
+                    <!-- Logout -->
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" title="Logout" class="text-[#6A2727]/50 hover:text-[#6A2727] transition-colors cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2h5a2 2 0 012 2v1"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Body: Categories panel + Book grid -->
+            <div class="flex flex-1">
+
+                <!-- Categories Panel (matches the photo: gray box with category list) -->
+                <div class="w-44 bg-gray-200 border-r border-gray-300 py-4 flex-shrink-0">
+                    <div class="px-4 mb-2 text-sm font-bold text-[#6A2727]">Categories</div>
+
+                    <a href="/books"
+                        class="block px-4 py-2 text-sm {{ !isset($category) || !$category ? 'bg-gray-600 text-white font-semibold' : 'text-gray-700 hover:bg-gray-300' }}">
+                        All
+                    </a>
+
+                    @foreach($categoryNames as $id => $name)
+                    <a href="/books?category={{ $id }}&search={{ request('search') }}"
+                        class="block px-4 py-2 text-sm {{ isset($category) && $category == $id ? 'bg-gray-600 text-white font-semibold' : 'text-gray-700 hover:bg-gray-300' }}">
+                        {{ $name }}
+                    </a>
+                    @endforeach
+                </div>
+
+                <!-- Book Grid -->
+                <div class="flex-1 p-6">
+                    <div class="grid grid-cols-3 gap-5">
+                        @forelse($books as $book)
+                        <div class="bg-white p-4 rounded-xl shadow hover:shadow-md transition flex gap-4">
+
+                            <!-- Cover -->
+                            <img src="{{ asset('images/' . $book->cover) }}"
+                                class="w-20 h-28 object-cover rounded-lg flex-shrink-0">
+
+                            <!-- Details -->
+                            <div class="flex-1 min-w-0 flex flex-col justify-between">
+                                <div>
+                                    <h3 class="font-bold text-sm text-gray-800 leading-tight line-clamp-2">{{ $book->title }}</h3>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $book->author }}</p>
+                                    <span class="inline-block mt-1 text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
+                                        {{ $categoryNames[$book->category_id] ?? '' }}
+                                    </span>
+                                    <p class="text-xs text-gray-400 mt-1.5 line-clamp-2">{{ $book->description }}</p>
+                                </div>
+
+                                <div class="flex justify-between items-center mt-2">
+                                    @if($book->status === 'Available')
+                                        <form method="POST" action="{{ route('reserve.book') }}" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="book_id" value="{{ $book->id }}">
+                                            <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-white text-xs px-3 py-1 rounded-lg cursor-pointer font-semibold transition">
+                                                Reserve
+                                            </button>
+                                        </form>
+                                    @elseif($book->status === 'Reserved')
+                                        <span class="text-xs px-3 py-1 rounded-lg font-semibold bg-gray-200 text-gray-600">
+                                            Reserved
+                                        </span>
+                                    @else
+                                        <span class="text-xs px-2.5 py-1 rounded-lg font-semibold bg-gray-400 text-white">
+                                            Not Available
+                                        </span>
+                                    @endif
+                                    <span class="text-xs px-2.5 py-1 rounded-lg font-semibold {{ $book->status === 'Available' ? 'bg-blue-500 text-white' : ($book->status === 'Reserved' ? 'bg-yellow-500 text-white' : 'bg-red-400 text-white') }}">
+                                        {{ $book->status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @empty
+                        <div class="col-span-3 text-center py-20 text-gray-400">
+                            <p class="text-base">{{ request('search') ? 'No books match your search.' : 'No books found in this category.' }}</p>
+                            
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+
+            </div>
+        </main>
     </div>
 </x-layout>
