@@ -6,9 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
-class BorrowRequestApproved extends Mailable
+class BookReturnedSuccessfully extends Mailable
 {
     use Queueable;
 
@@ -17,29 +16,29 @@ class BorrowRequestApproved extends Mailable
     public $studentId;
     public $studentName;
     public $borrowDate;
-    public $dueDate;
+    public $returnDate;
 
-    public function __construct($bookTitle, $bookId, $studentId, $studentName, $borrowDate, $dueDate)
+    public function __construct($bookTitle, $bookId, $studentId, $studentName, $borrowDate, $returnDate)
     {
         $this->bookTitle = $bookTitle;
         $this->bookId = $bookId;
         $this->studentId = $studentId;
         $this->studentName = $studentName;
         $this->borrowDate = $borrowDate;
-        $this->dueDate = $dueDate;
+        $this->returnDate = $returnDate;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Borrow Request Approved - ' . $this->bookTitle,
+            subject: 'Book Returned Successfully - ' . $this->bookTitle,
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.borrow-approved',
+            view: 'emails.book-returned-successfully',
         );
     }
 

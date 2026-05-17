@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Borrow Request Approved</title>
+    <title>Book Returned Successfully</title>
     <style>
         html, body { margin: 0; overflow: hidden; }
         body { font-family: Arial, sans-serif; color: #222; line-height: 1.35; font-size: 14.5px; }
@@ -16,17 +16,17 @@
     <div class="message">
         <p>Hello {{ $studentName }},</p>
 
-        <p>Your borrow request has been approved.</p>
+        <p>The book you borrowed has been successfully returned.</p>
 
         <div class="details">
             <p><strong>Book Title:</strong> {{ $bookTitle }}</p>
             <p><strong>Book ID:</strong> {{ $bookId }}</p>
             <p><strong>Student ID:</strong> {{ $studentId }}</p>
             <p><strong>Borrow Date &amp; Time:</strong> {{ \Carbon\CarbonImmutable::parse($borrowDate)->setTimezone(config('app.timezone'))->format('M d, Y - h:i A') }}</p>
-            <p><strong>Due Date:</strong> {{ \Carbon\CarbonImmutable::parse($dueDate)->setTimezone(config('app.timezone'))->format('M d, Y') }}</p>
+            <p><strong>Return Date &amp; Time:</strong> {{ \Carbon\CarbonImmutable::parse($returnDate)->setTimezone(config('app.timezone'))->format('M d, Y - h:i A') }}</p>
         </div>
 
-        <p>Please return the book on or before the due date.</p>
+        <p>Thank you for returning the book.</p>
 
         <p>Thank you,<br>Cena Library</p>
     </div>

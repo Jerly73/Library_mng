@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('book_id');
-            $table->date('borrow_date');
+            $table->dateTime('borrow_date');
             $table->date('due_date');
-            $table->date('return_date')->nullable();
+            $table->dateTime('return_date')->nullable();
+            $table->timestamp('due_notice_sent_at')->nullable();
             $table->enum('status', ['Borrowed', 'Returned', 'Overdue'])->default('Borrowed');
             $table->timestamps();
 

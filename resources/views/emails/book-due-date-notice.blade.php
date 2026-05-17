@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Borrow Request Approved</title>
+    <title>Book Due Date Notice</title>
     <style>
         html, body { margin: 0; overflow: hidden; }
-        body { font-family: Arial, sans-serif; color: #222; line-height: 1.35; font-size: 14.5px; }
+        body { font-family: Arial, sans-serif; color: #222; line-height: 1.35; font-size: 15px; }
         .message { max-width: none; margin: 0; padding: 6px 0; }
         p { margin: 4px 0; }
         .details { margin: 8px 10px; }
@@ -16,7 +16,7 @@
     <div class="message">
         <p>Hello {{ $studentName }},</p>
 
-        <p>Your borrow request has been approved.</p>
+        <p>The book you borrowed is on due date.</p>
 
         <div class="details">
             <p><strong>Book Title:</strong> {{ $bookTitle }}</p>
@@ -26,7 +26,7 @@
             <p><strong>Due Date:</strong> {{ \Carbon\CarbonImmutable::parse($dueDate)->setTimezone(config('app.timezone'))->format('M d, Y') }}</p>
         </div>
 
-        <p>Please return the book on or before the due date.</p>
+        <p>Please return the book to the library as soon as possible.</p>
 
         <p>Thank you,<br>Cena Library</p>
     </div>

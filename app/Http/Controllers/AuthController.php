@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\LoginTracker;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -29,12 +32,29 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Invalid credentials or not a student account.']);
         }
 
-        if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-            $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+        // Capture timestamps before any DB/session mutation
+        $loginTimestamp = CarbonImmutable::now(config('app.timezone'));
+
+        $userId = DB::transaction(function () use ($credentials, $loginTimestamp) {
+            // Confirm credentials inside the transaction
+            if (!Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
+                DB::rollBack();
+                return null;
+            }
+            $uid = Auth::id();
+            \App\Models\LoginTracker::create([
+                'user_id'    => $uid,
+                'login_time' => $loginTimestamp,   // exact server time captured before anything ran
+            ]);
+            return $uid;
+        });
+
+        if (!$userId) {
+            return back()->withErrors(['email' => 'Invalid credentials.']);
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials.']);
+        $request->session()->regenerate();
+        return redirect()->intended('/dashboard');
     }
 
     // Show admin login form
@@ -56,12 +76,27 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Invalid credentials or not an admin account.']);
         }
 
-        if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('admin.home'));
+        $loginTimestamp = CarbonImmutable::now(config('app.timezone'));
+
+        $userId = DB::transaction(function () use ($credentials, $loginTimestamp) {
+            if (!Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
+                DB::rollBack();
+                return null;
+            }
+            $uid = Auth::id();
+            \App\Models\LoginTracker::create([
+                'user_id'    => $uid,
+                'login_time' => $loginTimestamp,
+            ]);
+            return $uid;
+        });
+
+        if (!$userId) {
+            return back()->withErrors(['email' => 'Invalid credentials.']);
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials.']);
+        $request->session()->regenerate();
+        return redirect()->intended(route('admin.home'));
     }
 
     // Show registration form
@@ -86,15 +121,38 @@ class AuthController extends Controller
             'role' => 'student',
         ]);
 
-        Auth::login($user);
+        $loginTimestamp = CarbonImmutable::now(config('app.timezone'));
+
+        DB::transaction(function () use ($user, $loginTimestamp) {
+            Auth::login($user);
+            \App\Models\LoginTracker::create([
+                'user_id'    => $user->id,
+                'login_time' => $loginTimestamp,
+            ]);
+        });
+
         $request->session()->regenerate();
 
         return redirect('/dashboard');
     }
 
-    // Logout
+    // Logout – record the time the logout handler is actually *invoked*
     public function logout(Request $request)
     {
+        $logoutTimestamp = CarbonImmutable::now(config('app.timezone'));
+
+        // Capture userId while the session is still alive
+        // (before logout destroys it in the lines below)
+        $userId = Auth::id();
+
+        if ($userId) {
+            \App\Models\LoginTracker::where('user_id', $userId)
+                ->orderBy('login_time', 'desc')
+                ->whereNull('logout_time')
+                ->first()
+                ?->update(['logout_time' => $logoutTimestamp]);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

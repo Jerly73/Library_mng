@@ -6,9 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
-use Illuminate\Queue\SerializesModels;
 
-class BorrowRequestApproved extends Mailable
+class BookDueDateNotice extends Mailable
 {
     use Queueable;
 
@@ -32,14 +31,14 @@ class BorrowRequestApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Borrow Request Approved - ' . $this->bookTitle,
+            subject: 'Book Due Date Notice - ' . $this->bookTitle,
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.borrow-approved',
+            view: 'emails.book-due-date-notice',
         );
     }
 

@@ -44,6 +44,14 @@
                     </svg>
                     <span>Pending Requests</span>
                 </a>
+
+                <!-- Logs -->
+                <a href="{{ route('admin.logs') }}" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Logs</span>
+                </a>
             </nav>
         </aside>
 
@@ -103,17 +111,24 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-[#6A2727]">Borrowed List</h3>
 
-                <input type="text" placeholder="Search by Student ID or Book ID..."
-                    class="border px-3 py-2 rounded focus:ring-2 focus:ring-[#6A2727]">
+                <form method="GET" action="{{ route('admin.students') }}" class="flex items-center gap-2">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ $borrowSearch }}"
+                        placeholder="Search by Student ID or Book ID..."
+                        class="border px-3 py-2 rounded focus:ring-2 focus:ring-[#6A2727]"
+                    >
+                    <button type="submit" class="bg-[#6A2727] text-white px-4 py-2 rounded hover:bg-[#4f1d1d]">
+                        Search
+                    </button>
+                    @if($borrowSearch)
+                        <a href="{{ route('admin.students') }}" class="border px-4 py-2 rounded text-gray-700 hover:bg-gray-100">
+                            Clear
+                        </a>
+                    @endif
+                </form>
             </div>
-
-            @php
-            $borrowedIssues = \App\Models\Issue::with('book')
-                ->where('status', 'Borrowed')
-                ->orWhere('status', 'Approved')
-                ->orderBy('due_date', 'asc')
-                ->get();
-            @endphp
 
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">

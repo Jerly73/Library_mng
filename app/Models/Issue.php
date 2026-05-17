@@ -12,7 +12,15 @@ class Issue extends Model
         'borrow_date',
         'due_date',
         'return_date',
+        'due_notice_sent_at',
         'status',
+    ];
+
+    protected $casts = [
+        'borrow_date' => 'datetime',
+        'due_date' => 'date',
+        'return_date' => 'datetime',
+        'due_notice_sent_at' => 'datetime',
     ];
 
     public function book()

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ReservationConfirmed;
 use App\Mail\BorrowRequestApproved;
 use App\Mail\BorrowRequestRejected;
+use App\Mail\BookDueDateNotice;
+use App\Mail\BookReturnedSuccessfully;
 
 // Redirect root to login
 Route::redirect('/', '/login');
@@ -64,6 +66,44 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/borrowed-books', function () {
+        $dueIssues = \App\Models\Issue::with('book', 'student')
+            ->where('student_id', Auth::id())
+            ->whereIn('status', ['Approved', 'Borrowed'])
+            ->whereDate('due_date', '<=', now()->toDateString())
+            ->whereNull('due_notice_sent_at')
+            ->get();
+
+        foreach ($dueIssues as $dueIssue) {
+            \App\Models\Message::firstOrCreate(
+                [
+                    'user_id' => $dueIssue->student_id,
+                    'issue_id' => $dueIssue->id,
+                    'type' => 'due_date',
+                ],
+                [
+                    'title' => 'Book Due Date Notice',
+                    'body' => "The book you borrowed is on due date.\n\nBook Title: {$dueIssue->book->title}\nBook ID: " . ($dueIssue->book->book_id ?? $dueIssue->book->id) . "\nStudent ID: {$dueIssue->student_id}\nBorrow Date & Time: " . \Carbon\CarbonImmutable::parse($dueIssue->borrow_date)->setTimezone(config('app.timezone'))->format('M d, Y - h:i A') . "\nDue Date: " . \Carbon\CarbonImmutable::parse($dueIssue->due_date)->setTimezone(config('app.timezone'))->format('M d, Y'),
+                ]
+            );
+
+            try {
+                if ($dueIssue->student && $dueIssue->student->email) {
+                    Mail::to($dueIssue->student->email)->send(new BookDueDateNotice(
+                        $dueIssue->book->title,
+                        $dueIssue->book->book_id ?? $dueIssue->book->id,
+                        $dueIssue->student_id,
+                        $dueIssue->student->name,
+                        $dueIssue->borrow_date,
+                        $dueIssue->due_date
+                    ));
+
+                    $dueIssue->update(['due_notice_sent_at' => now()]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Failed to send due date email: ' . $e->getMessage());
+            }
+        }
+
         $issues = \App\Models\Issue::with('book')
             ->where('student_id', Auth::id())
             ->whereIn('status', ['Pending', 'Approved', 'Borrowed'])
@@ -71,6 +111,20 @@ Route::middleware('auth')->group(function () {
             ->get();
         return view('Borrowed Books', compact('issues'));
     })->name('borrowed.books');
+
+    Route::get('/messages', function () {
+        $messages = \App\Models\Message::with('issue.book', 'issue.student')
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->get();
+
+        \App\Models\Message::where('user_id', Auth::id())
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        return view('message', compact('messages'));
+    })->name('student.messages');
+
     // Student reserve book
     Route::post('/reserve', function (Request $request) {
         $validated = $request->validate([
@@ -158,6 +212,19 @@ Route::middleware('auth')->group(function () {
         // Approve means book is now officially borrowed
         $issue->update(['status' => 'Borrowed', 'borrow_date' => now()]);
         $issue->book->update(['status' => 'Borrowed']);
+        $issue->refresh()->load('student', 'book');
+
+        \App\Models\Message::firstOrCreate(
+            [
+                'user_id' => $issue->student_id,
+                'issue_id' => $issue->id,
+                'type' => 'borrow_approved',
+            ],
+            [
+                'title' => 'Borrow Request Approved',
+                'body' => "Your borrow request has been approved.\n\nBook Title: {$issue->book->title}\nBook ID: " . ($issue->book->book_id ?? $issue->book->id) . "\nStudent ID: {$issue->student_id}\nBorrow Date & Time: " . \Carbon\CarbonImmutable::parse($issue->borrow_date)->setTimezone(config('app.timezone'))->format('M d, Y - h:i A') . "\nDue Date: " . \Carbon\CarbonImmutable::parse($issue->due_date)->setTimezone(config('app.timezone'))->format('M d, Y'),
+            ]
+        );
 
         // Send approval email to student
         try {
@@ -165,6 +232,7 @@ Route::middleware('auth')->group(function () {
                 Mail::to($issue->student->email)->send(new BorrowRequestApproved(
                     $issue->book->title,
                     $issue->book->book_id ?? $issue->book->id,
+                    $issue->student_id,
                     $issue->student->name,
                     $issue->borrow_date,
                     $issue->due_date
@@ -207,8 +275,8 @@ Route::middleware('auth')->group(function () {
         $validated = $request->validate([
             'student_id' => 'required|integer|exists:users,id',
             'book_id' => 'required|integer|exists:books,id',
-            'borrow_date' => 'required|date',
-            'due_date' => 'required|date|after_or_equal:borrow_date',
+            'borrow_date' => 'nullable|date',
+            'due_date' => 'required|date|after_or_equal:today',
         ]);
 
         $book = \App\Models\Book::findOrFail($validated['book_id']);
@@ -229,7 +297,7 @@ Route::middleware('auth')->group(function () {
             $issue = \App\Models\Issue::create([
                 'student_id' => $studentId,
                 'book_id' => $book->id,
-                'borrow_date' => $validated['borrow_date'],
+                'borrow_date' => now(),
                 'due_date' => $validated['due_date'],
                 'status' => 'Borrowed',
             ]);
@@ -275,6 +343,34 @@ Route::middleware('auth')->group(function () {
 
         if ($issue) {
             $issue->update(['status' => 'Returned', 'return_date' => now()]);
+            $issue->load('book', 'student');
+
+            \App\Models\Message::firstOrCreate(
+                [
+                    'user_id' => $issue->student_id,
+                    'issue_id' => $issue->id,
+                    'type' => 'book_returned',
+                ],
+                [
+                    'title' => 'Book Returned Successfully',
+                    'body' => "The book you borrowed has been successfully returned.\n\nBook Title: {$issue->book->title}\nBook ID: " . ($issue->book->book_id ?? $issue->book->id) . "\nStudent ID: {$issue->student_id}\nBorrow Date & Time: " . \Carbon\CarbonImmutable::parse($issue->borrow_date)->setTimezone(config('app.timezone'))->format('M d, Y - h:i A') . "\nReturn Date & Time: " . \Carbon\CarbonImmutable::parse($issue->return_date)->setTimezone(config('app.timezone'))->format('M d, Y - h:i A'),
+                ]
+            );
+
+            try {
+                if ($issue->student && $issue->student->email) {
+                    Mail::to($issue->student->email)->send(new BookReturnedSuccessfully(
+                        $issue->book->title,
+                        $issue->book->book_id ?? $issue->book->id,
+                        $issue->student_id,
+                        $issue->student->name,
+                        $issue->borrow_date,
+                        $issue->return_date
+                    ));
+                }
+            } catch (\Exception $e) {
+                \Log::error('Failed to send returned book email: ' . $e->getMessage());
+            }
         }
 
         // Mark book as Available
@@ -321,10 +417,44 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return view('pending-requests', compact('pendingRequests'));
     })->name('admin.pending.requests');
 
+    Route::get('/logs', function () {
+        $validated = request()->validate([
+            'student_id' => 'nullable|integer|min:1',
+        ]);
+        $studentIdFilter = $validated['student_id'] ?? null;
+
+        $logs = \App\Models\LoginTracker::with('user')
+            ->when($studentIdFilter, fn ($query) => $query->where('user_id', $studentIdFilter))
+            ->latest('login_time')
+            ->get();
+
+        $issueLogs = \App\Models\Issue::with('book', 'student')
+            ->whereIn('status', ['Borrowed', 'Returned', 'Approved', 'Rejected'])
+            ->when($studentIdFilter, fn ($query) => $query->where('student_id', $studentIdFilter))
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return view('logs', compact('logs', 'issueLogs', 'studentIdFilter'));
+    })->name('admin.logs');
+
     Route::get('/Student', function () {
-      
+        $borrowSearch = trim((string) request('search', ''));
         $students = Students::all();
-        return view('student', compact('students'));
+
+        $borrowedIssues = \App\Models\Issue::with('book', 'student')
+            ->whereIn('status', ['Borrowed', 'Approved'])
+            ->when($borrowSearch, function ($query) use ($borrowSearch) {
+                $query->where(function ($query) use ($borrowSearch) {
+                    $query->where('student_id', $borrowSearch)
+                        ->orWhereHas('book', function ($query) use ($borrowSearch) {
+                            $query->where('book_id', $borrowSearch);
+                        });
+                });
+            })
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        return view('student', compact('students', 'borrowedIssues', 'borrowSearch'));
     })->name('admin.students');
 
     Route::get('/Library', function () {
@@ -370,4 +500,3 @@ Route::middleware('guest')->group(function () {
 
 
 // try lang ni sya 
-

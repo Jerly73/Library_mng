@@ -45,6 +45,13 @@
                     </svg>
                     <span>Borrowed Books</span>
                 </a>
+                <a href="{{ route('student.messages') }}" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 01-2 2H8l-5 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                    </svg>
+                    <span>Messages</span>
+                </a>
             </nav>
         </aside>
 
