@@ -246,7 +246,7 @@ Route::middleware('auth')->group(function () {
     })->name('admin.approve.borrow');
 
     Route::post('/admin/reject-borrow/{id}', function ($id) {
-        $issue = \App\Models\Issue::with('student')->findOrFail($id);
+        $issue = \App\Models\Issue::with('student', 'book')->findOrFail($id);
 
         if ($issue->status !== 'Pending') {
             return back()->with('error', 'Request already processed.');
@@ -254,6 +254,19 @@ Route::middleware('auth')->group(function () {
 
         $issue->update(['status' => 'Rejected']);
         $issue->book->update(['status' => 'Available']);
+        $issue->refresh()->load('student', 'book');
+
+        \App\Models\Message::firstOrCreate(
+            [
+                'user_id' => $issue->student_id,
+                'issue_id' => $issue->id,
+                'type' => 'borrow_rejected',
+            ],
+            [
+                'title' => 'Borrow Request Rejected',
+                'body' => "Your borrow request was rejected.\n\nBook Title: {$issue->book->title}\n\nYou may submit a new request for another available book or contact the library staff for help.",
+            ]
+        );
 
         // Send rejection email to student
         try {

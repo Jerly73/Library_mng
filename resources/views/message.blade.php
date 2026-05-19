@@ -97,8 +97,8 @@
                                     {{ $message->created_at->setTimezone(config('app.timezone'))->format('M d, Y - h:i A') }}
                                 </p>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-xs {{ $message->type === 'due_date' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
-                                {{ $message->type === 'due_date' ? 'Due Date' : ($message->type === 'book_returned' ? 'Returned' : 'Approved') }}
+                            <span class="px-3 py-1 rounded-full text-xs {{ in_array($message->type, ['due_date', 'borrow_rejected']) ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600' }}">
+                                {{ $message->type === 'due_date' ? 'Due Date' : ($message->type === 'book_returned' ? 'Returned' : ($message->type === 'borrow_rejected' ? 'Rejected' : 'Approved')) }}
                             </span>
                         </div>
 
@@ -116,6 +116,14 @@
                                     'studentName' => $issue->student->name ?? Auth::user()->name,
                                     'borrowDate' => $issue->borrow_date,
                                     'dueDate' => $issue->due_date,
+                                ];
+                            }
+
+                            if ($issue && $issue->book && $message->type === 'borrow_rejected') {
+                                $emailView = 'emails.borrow-rejected';
+                                $emailData = [
+                                    'bookTitle' => $issue->book->title,
+                                    'studentName' => $issue->student->name ?? Auth::user()->name,
                                 ];
                             }
 
