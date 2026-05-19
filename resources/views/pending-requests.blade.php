@@ -38,7 +38,7 @@
                 </a>
 
                 <!-- Pending Requests -->
-                <a href="{{ route('admin.pending.requests') }}" class="flex items-center space-x-2 px-4 py-2 hover:bg-gray-200 rounded">
+                <a href="{{ route('admin.pending.requests') }}"class="flex items-center space-x-2 px-4 py-2 bg-[#6A2727]/36 rounded text-gray-800 font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h6M12 6l-4-4m0 0l-4 4m4-4v6m0 0l4-4m-4 4l4 4m-4-4h6"/>
                     </svg>

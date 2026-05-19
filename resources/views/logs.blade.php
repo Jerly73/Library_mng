@@ -146,32 +146,30 @@
                 @if($logs->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="bg-[#f3e8e8] text-gray-700">
-                            <tr>
-                                <th class="p-3">#</th>
-                                <th class="p-3">User Name</th>
-                                <th class="p-3">User ID</th>
-                                <th class="p-3">Login Time</th>
-                                <th class="p-3">Logout Time</th>
-                                <th class="p-3">Session Duration</th>
-                            </tr>
-                        </thead>
+<thead class="bg-[#f3e8e8] text-gray-700">
+    <tr>
+        <th class="p-3 text-left">#</th>
+        <th class="p-3 text-left">User Name</th>
+        <th class="p-3 text-left">User ID</th>
+        <th class="p-3 text-left">Login Time</th>
+        <th class="p-3 text-left">Logout Time</th>
+    </tr>
+</thead>
                         <tbody>
                             @foreach($logs as $index => $log)
-                            <tr class="border-t hover:bg-gray-50">
-                                 <td class="p-3">{{ $index + 1 }}</td>
-                                <td class="p-3 font-medium">{{ $log->user->name ?? 'Unknown User' }}</td>
-                                <td class="p-3">{{ $log->user_id }}</td>
-                                <td class="p-3">{{ $log->login_label }}</td>
-                                <td class="p-3">
-                                    @if($log->logout_label)
-                                        <span class="text-green-600">{{ $log->logout_label }}</span>
-                                    @else
-                                        <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-600">Currently Active</span>
-                                    @endif
-                                </td>
-                                <td class="p-3">{{ $log->duration }}</td>
-                            </tr>
+                             <tr class="border-t hover:bg-gray-50">
+                                  <td class="p-3 text-left">{{ $index + 1 }}</td>
+                                 <td class="p-3 text-left font-medium">{{ $log->user->name ?? 'Unknown User' }}</td>
+                                 <td class="p-3 text-left">{{ $log->user_id }}</td>
+                                 <td class="p-3 text-left">{{ $log->login_label }}</td>
+                                 <td class="p-3 text-left">
+                                     @if($log->logout_label)
+                                         <span class="text-green-600">{{ $log->logout_label }}</span>
+                                     @else
+                                         <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-600">Currently Active</span>
+                                     @endif
+                                 </td>
+                             </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -211,61 +209,61 @@
                 @if($issueLogs->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead class="bg-[#f3e8e8] text-gray-700">
-                            <tr>
-                                <th class="p-3">#</th>
-                                <th class="p-3">Student Name</th>
-                                <th class="p-3">Student ID</th>
-                                <th class="p-3">Book Title</th>
-                                <th class="p-3">Book ID</th>
-                                <th class="p-3">Borrow Date &amp; Time</th>
-                                <th class="p-3">Return Date &amp; Time</th>
-                                <th class="p-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($issueLogs as $index => $issue)
-                            <tr class="border-t hover:bg-gray-50">
-                                <td class="p-3">{{ $index + 1 }}</td>
-                                <td class="p-3 font-medium">{{ $issue->student->name ?? 'Unknown' }}</td>
-                                <td class="p-3">{{ $issue->student_id }}</td>
-                                <td class="p-3">{{ $issue->book->title ?? 'N/A' }}</td>
-                                <td class="p-3">{{ $issue->book->book_id ?? 'N/A' }}</td>
-                                <td class="p-3 text-blue-600">
-                                        @php
-                                            $tz       = \App\Models\LoginTracker::SHOW_TZ;
-                                            $borrowDt = \Carbon\CarbonImmutable::parse($issue->borrow_date ?? '1970-01-01', $tz);
-                                        @endphp
-                                        {{ $borrowDt->format('M d, Y - h:i A') }}
-                                </td>
-                                <td class="p-3 text-green-600">
-                                    @if($issue->return_date)
-                                        @php
-                                            $retDt = \Carbon\CarbonImmutable::parse($issue->return_date, $tz);
-                                        @endphp
-                                        {{ $retDt->format('M d, Y - h:i A') }}
-                                    @else
-                                        —
-                                    @endif
-                                </td>
-                                <td class="p-3">
-                                    @php
-                                        $statusColors = [
-                                            'Borrowed' => 'bg-blue-100 text-blue-600',
-                                            'Returned' => 'bg-green-100 text-green-600',
-                                            'Approved' => 'bg-purple-100 text-purple-600',
-                                            'Rejected' => 'bg-red-100 text-red-600',
-                                            'Pending' => 'bg-yellow-100 text-yellow-600',
-                                            'Overdue' => 'bg-orange-100 text-orange-600',
-                                        ];
-                                    @endphp
-                                    <span class="px-3 py-1 rounded-full text-xs {{ $statusColors[$issue->status] ?? 'bg-gray-100 text-gray-600' }}">
-                                        {{ $issue->status }}
-                                    </span>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                         <thead class="bg-[#f3e8e8] text-gray-700">
+                             <tr>
+                                 <th class="p-3 text-left">#</th>
+                                 <th class="p-3 text-left">Student Name</th>
+                                 <th class="p-3 text-left">Student ID</th>
+                                 <th class="p-3 text-left">Book Title</th>
+                                 <th class="p-3 text-left">Book ID</th>
+                                 <th class="p-3 text-left">Borrow Date &amp; Time</th>
+                                 <th class="p-3 text-left">Return Date &amp; Time</th>
+                                 <th class="p-3 text-left">Status</th>
+                             </tr>
+                         </thead>
+                         <tbody>
+                             @foreach($issueLogs as $index => $issue)
+                             <tr class="border-t hover:bg-gray-50">
+                                 <td class="p-3 text-left">{{ $index + 1 }}</td>
+                                 <td class="p-3 text-left font-medium">{{ $issue->student->name ?? 'Unknown' }}</td>
+                                 <td class="p-3 text-left">{{ $issue->student_id }}</td>
+                                 <td class="p-3 text-left">{{ $issue->book->title ?? 'N/A' }}</td>
+                                 <td class="p-3 text-left">{{ $issue->book->book_id ?? 'N/A' }}</td>
+                                 <td class="p-3 text-left text-blue-600">
+                                         @php
+                                             $tz       = \App\Models\LoginTracker::SHOW_TZ;
+                                             $borrowDt = \Carbon\CarbonImmutable::parse($issue->borrow_date ?? '1970-01-01', $tz);
+                                         @endphp
+                                         {{ $borrowDt->format('M d, Y - h:i A') }}
+                                 </td>
+                                 <td class="p-3 text-left text-green-600">
+                                     @if($issue->return_date)
+                                         @php
+                                             $retDt = \Carbon\CarbonImmutable::parse($issue->return_date, $tz);
+                                         @endphp
+                                         {{ $retDt->format('M d, Y - h:i A') }}
+                                     @else
+                                         —
+                                     @endif
+                                 </td>
+                                 <td class="p-3 text-left">
+                                     @php
+                                         $statusColors = [
+                                             'Borrowed' => 'bg-blue-100 text-blue-600',
+                                             'Returned' => 'bg-green-100 text-green-600',
+                                             'Approved' => 'bg-purple-100 text-purple-600',
+                                             'Rejected' => 'bg-red-100 text-red-600',
+                                             'Pending' => 'bg-yellow-100 text-yellow-600',
+                                             'Overdue' => 'bg-orange-100 text-orange-600',
+                                         ];
+                                     @endphp
+                                     <span class="px-3 py-1 rounded-full text-xs {{ $statusColors[$issue->status] ?? 'bg-gray-100 text-gray-600' }}">
+                                         {{ $issue->status }}
+                                     </span>
+                                 </td>
+                             </tr>
+                             @endforeach
+                         </tbody>
                     </table>
                 </div>
                 <div class="flex justify-between items-center mt-4 px-6 py-3 bg-gray-50 border-t text-sm text-gray-500">
